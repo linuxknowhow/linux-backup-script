@@ -1,0 +1,12 @@
+{
+    "require": {
+        "aws/aws-sdk-php": "^3.33",
+        "symfony/yaml": "^6.1",
+        "beberlei/assert": "^3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Backup\\":"class"
+        }
+    }
+}
