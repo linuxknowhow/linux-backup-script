@@ -11,7 +11,7 @@ use Assert\LazyAssertionException;
 class Local implements CommonInterface {
     private $destionation_folder;
 
-    public function __construct( array $settings ) {
+    public function __construct(array $settings) {
         foreach ($settings as $setting_key => $setting_value) {
             switch ($setting_key) {
                 case 'folder':
@@ -26,7 +26,7 @@ class Local implements CommonInterface {
                     break;
 
                 default:
-                    abort("Invalid settings in the Local settings section of the storage providers: '" . $setting_key . "'");
+                    abort("Invalid setting in the Local settings section of the storage providers found: '" . $setting_key . "'");
             }
         }
     }

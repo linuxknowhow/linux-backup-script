@@ -24,6 +24,7 @@ containers:
 
 storage:
     aws:
+        region: <enter_yours>
         bucket: <enter_yours>
         access_key_id: <enter_yours>
         secret_key: <enter_yours>

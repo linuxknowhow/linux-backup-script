@@ -7,10 +7,13 @@ use Aws\Exception\AwsException;
 use Aws\Exception\MultipartUploadException;
 use Aws\S3\MultipartUploader;
 use Backup\Entity;
+use Assert\Assert;
+use Assert\LazyAssertionException;
 
 class AWS implements CommonInterface {
     private string $backup_name;
 
+    private string $region;
     private string $bucket_name;
     private string $folder;
     private string $access_key_id;
@@ -18,11 +21,42 @@ class AWS implements CommonInterface {
 
     private S3Client $s3;
 
-    public function __construct($backup_name, $bucket_name, $folder, $access_key_id, $secret_key) {
-        $bucket_name_trimmed = trim($bucket_name, '/');
+    public function __construct(array $settings) {
+        try {
+
+            foreach ($settings as $setting_key => $setting_value) {
+                switch ($setting_key) {
+                    case 'region':
+                        Assert::lazy()->tryAll()
+                            ->that($setting_value)
+                                ->string('Invalid AWS region setting')
+                                ->notEmpty('AWS region cannot be empty')
+                                ->betweenLength(1, 255, 'Invalid AWS region setting')
+                            ->verifyNow();
+
+                        $this->region = $setting_value;
+
+                        break;
+
+                    default:
+                        abort("Invalid setting in the AWS settings section of the storage providers found: '" . $setting_key . "'");
+                }
+            }
+
+        } catch (LazyAssertionException $e) {
+            abort( $e->getMessage() );
+
+        } catch (\Throwable $e) {
+            abort( "Fatal error: " . $e->getMessage() );
+        }
+
+        exit();
+
+        // $bucket_name_trimmed = trim($bucket_name, '/');
         $folder_trimmed = trim($folder, '/');
 
         $this->backup_name = $backup_name;
+        $this->region = $region;
         $this->bucket_name = $bucket_name_trimmed;
         $this->folder = $folder_trimmed;
         $this->access_key_id = $access_key_id;

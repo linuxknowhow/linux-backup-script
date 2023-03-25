@@ -27,24 +27,24 @@ trait CommonTrait {
             foreach ($source as $source_file) {
                 Assert::lazy()->tryAll()
                     ->that($source_file)
-                        ->notEmpty()
                         ->string()
+                        ->notEmpty()
                         ->betweenLength(1, 4096)
                     ->verifyNow();
             }
 
         Assert::lazy()->tryAll()
             ->that($destination_filename)
-                ->notEmpty()
                 ->string()
+                ->notEmpty()
                 ->betweenLength(1, 255)
             ->verifyNow();
 
         if ( !is_null($destination_folder) ) {
             Assert::lazy()->tryAll()
                 ->that($destination_folder)
-                    ->notEmpty()
                     ->string()
+                    ->notEmpty()
                     ->betweenLength(1, 4096)
                 ->verifyNow();
         }
