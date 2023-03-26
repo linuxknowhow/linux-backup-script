@@ -11,10 +11,8 @@ use Assert\Assert;
 use Assert\LazyAssertionException;
 
 class AWS implements CommonInterface {
-    private string $backup_name;
-
     private string $region;
-    private string $bucket_name;
+    private string $bucket;
     private string $folder;
     private string $access_key_id;
     private string $secret_key;
@@ -22,26 +20,45 @@ class AWS implements CommonInterface {
     private S3Client $s3;
 
     public function __construct(array $settings) {
-        try {
+        $settings_keys = array_keys($settings);
 
-            foreach ($settings as $setting_key => $setting_value) {
-                switch ($setting_key) {
-                    case 'region':
-                        Assert::lazy()->tryAll()
-                            ->that($setting_value)
-                                ->string('Invalid AWS region setting')
-                                ->notEmpty('AWS region cannot be empty')
-                                ->betweenLength(1, 255, 'Invalid AWS region setting')
-                            ->verifyNow();
+        $allowed_settings = [
+            'region',
+            'bucket',
+            'access_key_id',
+            'secret_key',
+            'folder'
+        ];
 
-                        $this->region = $setting_value;
-
-                        break;
-
-                    default:
-                        abort("Invalid setting in the AWS settings section of the storage providers found: '" . $setting_key . "'");
-                }
+        foreach ($settings_keys as $setting_key) {
+            if ( !in_array($setting_key, $allowed_settings) ) {
+                abort("Invalid setting in the AWS settings section of the storage providers found: '" . $setting_key . "'");
             }
+        }
+
+        try {
+            Assert::lazy()->tryAll()
+                ->that( $settings['region'] )
+                    ->string('Invalid AWS region setting')
+                    ->notEmpty('AWS region cannot be empty')
+                    ->betweenLength(1, 255, 'Invalid AWS region setting')
+                ->that( $settings['bucket'] )
+                    ->string('Invalid AWS bucket setting')
+                    ->notEmpty('AWS bucket cannot be empty')
+                    ->betweenLength(1, 255, 'Invalid AWS bucket setting')
+                ->that( $settings['region'] )
+                    ->string('Invalid AWS access_key_id setting')
+                    ->notEmpty('AWS access_key_id cannot be empty')
+                    ->betweenLength(1, 255, 'Invalid AWS access_key_id setting')
+                ->that( $settings['region'] )
+                    ->string('Invalid AWS secret_key setting')
+                    ->notEmpty('AWS secret_key cannot be empty')
+                    ->betweenLength(1, 255, 'Invalid AWS secret_key setting')
+                ->that( $settings['folder'] )
+                    ->string('Invalid AWS folder setting')
+                    ->notEmpty('AWS folder cannot be empty')
+                    ->betweenLength(1, 255, 'Invalid AWS folder setting')
+                ->verifyNow();
 
         } catch (LazyAssertionException $e) {
             abort( $e->getMessage() );
@@ -50,17 +67,15 @@ class AWS implements CommonInterface {
             abort( "Fatal error: " . $e->getMessage() );
         }
 
-        exit();
+        // TODO:
+        // $bucket_trimmed = trim($bucket, '/');
+        // $folder_trimmed = trim($folder, '/');
 
-        // $bucket_name_trimmed = trim($bucket_name, '/');
-        $folder_trimmed = trim($folder, '/');
-
-        $this->backup_name = $backup_name;
-        $this->region = $region;
-        $this->bucket_name = $bucket_name_trimmed;
-        $this->folder = $folder_trimmed;
-        $this->access_key_id = $access_key_id;
-        $this->secret_key = $secret_key;
+        $this->region = $settings['region'];
+        $this->bucket = $settings['bucket'];
+        $this->folder = $settings['folder'];
+        $this->access_key_id = $settings['access_key_id'];
+        $this->secret_key = $settings['secret_key'];
 
         $this->s3 = new S3Client([
             'region'  => $this->region,
@@ -76,14 +91,14 @@ class AWS implements CommonInterface {
         $backups = [];
 
         if ( !empty($this->folder) ) {
-            $prefix = $this->folder . '/' . $this->backup_name;
+            $prefix = $this->folder;
         } else {
-            $prefix = $this->backup_name;
+            $prefix = '';
         }
 
         try {
             $objects = $this->s3->getIterator('ListObjects', [
-                'Bucket' => $this->bucket_name,
+                'Bucket' => $this->bucket,
                 'Prefix' => $prefix,
             ]);
 
@@ -110,13 +125,13 @@ class AWS implements CommonInterface {
         $filename = basename($filepath);
 
         if ( !empty($this->folder) ) {
-            $key = "{$this->folder}/{$this->backup_name}/$filename";
+            $key = "{$this->folder}/$filename";
         } else {
-            $key = "{$this->backup_name}/$filename";
+            $key = $filename;
         }
 
         $uploader = new MultipartUploader($this->s3, $filepath, [
-            'Bucket' => $this->bucket_name,
+            'Bucket' => $this->bucket,
             'Key' => $key
         ]);
 
@@ -137,7 +152,7 @@ class AWS implements CommonInterface {
         foreach ($backups as $backup) {
             if ( false === $backup->isPreserved() && !empty( $backup->getFilename() ) ) {
                 $this->s3->deleteObject([
-                    'Bucket' => $this->bucket_name,
+                    'Bucket' => $this->bucket,
                     'Key' => $backup->getFullpath(),
                 ]);
             }
