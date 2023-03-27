@@ -166,7 +166,7 @@ class Rar implements CommonInterface {
         if ( !is_null($password) ) {
             try {
                 Assert::lazy()->tryAll()
-                    ->that($password, 'Rar password')->notEmpty("Rar password cannot be empty")->string()->betweenLength(1, 127)
+                    ->that($password, 'Rar password')->string()->notEmpty("Rar password cannot be empty")->betweenLength(1, 127)
                     ->verifyNow();
 
             } catch (LazyAssertionException $e) {
@@ -192,8 +192,8 @@ class Rar implements CommonInterface {
             try {
                 Assert::lazy()->tryAll()
                     ->that($compression_level, 'Rar compression level')
-                        ->notEmpty("Rar encryption compression level cannot be empty when defined")
                         ->integer()
+                        ->notEmpty("Rar encryption compression level cannot be empty when defined")
                         ->between(0, 5, "RAR compression level can only be set between 0 and 5 (0-store, 3-default, 5-maximal)")
                     ->verifyNow();
 
@@ -215,8 +215,8 @@ class Rar implements CommonInterface {
             try {
                 Assert::lazy()->tryAll()
                     ->that($volume_size, 'Rar volume size')
-                        ->notEmpty("RAR volume size cannot be empty when defined")
                         ->string()
+                        ->notEmpty("RAR volume size cannot be empty when defined")
                         ->regex($regex, "RAR volume size is incorrect. Supported binary prefixes: k, M, G, T")
                     ->verifyNow();
 
@@ -267,8 +267,8 @@ class Rar implements CommonInterface {
             try {
                 Assert::lazy()->tryAll()
                     ->that($volume_size_number, 'Rar volume size')
-                        ->notEmpty("RAR volume size cannot be empty")
                         ->integer()
+                        ->notEmpty("RAR volume size cannot be empty")
                         ->between(1000, PHP_INT_MAX, "RAR volume size can only be set between 1000 bytes and " . PHP_INT_MAX . " bytes")
                     ->verifyNow();
 

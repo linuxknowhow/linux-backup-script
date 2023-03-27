@@ -119,7 +119,7 @@ class Gpg implements CommonInterface {
         if ( !is_null($password) ) {
             try {
                 Assert::lazy()->tryAll()
-                    ->that($password, 'GPG password')->notEmpty("GPG password cannot be empty")->string()->betweenLength(1, 255)
+                    ->that($password, 'GPG password')->string()->notEmpty("GPG password cannot be empty")->betweenLength(1, 255)
                     ->verifyNow();
 
             } catch (LazyAssertionException $e) {

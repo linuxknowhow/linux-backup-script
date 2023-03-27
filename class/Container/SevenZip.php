@@ -134,7 +134,7 @@ class SevenZip implements CommonInterface {
         if ( !is_null($password) ) {
             try {
                 Assert::lazy()->tryAll()
-                    ->that($password, '7-Zip password')->notEmpty("7-Zip password cannot be empty")->string()->betweenLength(1, 127)
+                    ->that($password, '7-Zip password')->string()->notEmpty("7-Zip password cannot be empty")->betweenLength(1, 127)
                     ->verifyNow();
 
             } catch (LazyAssertionException $e) {
@@ -159,8 +159,8 @@ class SevenZip implements CommonInterface {
         try {
             Assert::lazy()->tryAll()
                 ->that($compression_level, '7-Zip compression level')
-                    ->notEmpty("7-Zip encryption compression level cannot be empty when defined")
                     ->integer()
+                    ->notEmpty("7-Zip encryption compression level cannot be empty when defined")
                     ->between(0, 9, "7-Zip compression level can only be set between 0 and 9 (0-copy mode, 5-default, 9-ultra)")
                 ->verifyNow();
 
@@ -181,8 +181,8 @@ class SevenZip implements CommonInterface {
             try {
                 Assert::lazy()->tryAll()
                     ->that($volume_size, '7-Zip volume size')
-                        ->notEmpty("7-Zip volume size cannot be empty when defined")
                         ->string()
+                        ->notEmpty("7-Zip volume size cannot be empty when defined")
                         ->regex($regex, "7-Zip volume size is incorrect. Supported binary prefixes: k, M, G, T")
                     ->verifyNow();
 
@@ -233,8 +233,8 @@ class SevenZip implements CommonInterface {
             try {
                 Assert::lazy()->tryAll()
                     ->that($volume_size_number, '7-Zip volume size')
-                        ->notEmpty("7-Zip volume size cannot be empty")
                         ->integer()
+                        ->notEmpty("7-Zip volume size cannot be empty")
                         ->between(1000, PHP_INT_MAX, "7-Zip volume size can only be set between 1000 bytes and " . PHP_INT_MAX . " bytes")
                     ->verifyNow();
 

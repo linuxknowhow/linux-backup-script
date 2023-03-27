@@ -87,8 +87,8 @@ class TarGzip implements CommonInterface {
         try {
             Assert::lazy()->tryAll()
                 ->that($compression_level, 'Gzip compression level', "Gzip compression level can only be set between 1 and 9 (1-worst, 6-default, 9-best)")
-                    ->notEmpty("Gzip encryption compression level cannot be empty when defined")
                     ->integer()
+                    ->notEmpty("Gzip encryption compression level cannot be empty when defined")
                     ->between(1, 9)
                 ->verifyNow();
 

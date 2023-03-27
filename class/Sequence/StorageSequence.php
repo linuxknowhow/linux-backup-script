@@ -17,6 +17,11 @@ class StorageSequence extends Sequence {
 
                 break;
 
+            case 'aws':
+                $this->array[] = new AWS($settings);
+
+                break;
+
             default:
                 abort('The list of storage providers in the config file contains an incorrect element: \'' . $key . '\'');
         }
