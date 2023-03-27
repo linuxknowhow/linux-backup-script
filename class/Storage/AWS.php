@@ -67,13 +67,12 @@ class AWS implements CommonInterface {
             abort( "Fatal error: " . $e->getMessage() );
         }
 
-        // TODO:
-        // $bucket_trimmed = trim($bucket, '/');
-        // $folder_trimmed = trim($folder, '/');
+        $bucket_trimmed = trim( $settings['bucket'], '/' );
+        $folder_trimmed = trim( $settings['folder'], '/' );
 
         $this->region = $settings['region'];
-        $this->bucket = $settings['bucket'];
-        $this->folder = $settings['folder'];
+        $this->bucket = $bucket_trimmed;
+        $this->folder = $folder_trimmed;
         $this->access_key_id = $settings['access_key_id'];
         $this->secret_key = $settings['secret_key'];
 

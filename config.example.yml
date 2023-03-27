@@ -1,22 +1,22 @@
-name: pc
+name: "pc"
 
-tmp_folder: /tmp/linux-backup-script/
+tmp_folder: "/tmp/linux-backup-script/"
 
 sources:
     local_folders:
-        - /home/user/
-        - /var/www/
-        - /etc/
+        - "/home/user/"
+        - "/var/www/"
+        - "/etc/"
 
     mysql_databases:
-        - hostname: 127.0.0.1
-          username: root
+        - hostname: "127.0.0.1"
+          username: "root"
           password:
-          charset: utf8mb4
+          charset: "utf8mb4"
 
 containers:
     - targz:
-        compression_level: 6
+        compression_level: "6"
 
     - 7zip:
         password: test
@@ -24,20 +24,20 @@ containers:
 
 storage:
     aws:
-        region: <enter_yours>
-        bucket: <enter_yours>
-        access_key_id: <enter_yours>
-        secret_key: <enter_yours>
-        folder: <enter_yours>
+        region: "<enter_yours>"
+        bucket: "<enter_yours>"
+        access_key_id: "<enter_yours>"
+        secret_key: "<enter_yours>"
+        folder: "<enter_yours>"
 
     local:
-        folder: /mnt/external_storage/
+        folder: "/mnt/external_storage/"
 
 retention_periods:
-    days: 3
-    weeks: 3
-    months: 3
-    years: 3
+    days: "3"
+    weeks: "3"
+    months: "3"
+    years: "3"
 
 advanced_settings:
-    process_priority: 5
+    process_priority: "5"
