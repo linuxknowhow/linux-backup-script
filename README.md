@@ -32,8 +32,19 @@ This is a linux backup script. It's used for backuping:
 php /path/to/script/backup.php --create
 ```
 
+## Roadmap
+
+- Add more cloud storage providers: Backblaze, DigitalOcean
+
+- Add SSH support
+
+- Add logging
+
+- Add notifications
+
 ## Contact
 
 Please send your questions, feedback and suggestions to:
 
 stephenson.inbox@gmail.com
+
