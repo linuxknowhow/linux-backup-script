@@ -4,13 +4,13 @@
 
 This is a linux backup script. It's used for backuping:
 
-- folders
+- Folders
 - MySQL databases
-- cron entries
+- Cron entries
 
 ## Where does it upload backups?
 
-- locally
+- Locally
 - AWS S3
 
 ## Killer features:
