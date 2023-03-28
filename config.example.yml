@@ -14,7 +14,7 @@ sources:
           password:
           charset: "utf8mb4"
 
-containers:
+containers_sequence:
     - targz:
         compression_level: "6"
 

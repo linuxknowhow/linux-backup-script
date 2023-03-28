@@ -26,12 +26,12 @@ abstract class Sequence implements Iterator, Countable {
                     return;
 
                 } else {
-                    abort('The list of containers in the settings is incorrect');
+                    abort('The sequence of containers in the settings is incorrect');
                 }
             }
 
         } else {
-            abort('The list of containers in the settings is empty or incorrect');
+            abort('The sequence of containers in the settings is empty or incorrect');
         }
     }
 

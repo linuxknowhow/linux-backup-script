@@ -93,10 +93,10 @@ class Create {
             $cron->create();
         }
 
-        $containers_settings = $this->config->get('containers');
+        $containers_sequence_settings = $this->config->get('containers_sequence');
 
-        if ( isset( $containers_settings ) ) {
-            $containers_sequence = new ContainersSequence($containers_settings);
+        if ( isset( $containers_sequence_settings ) ) {
+            $containers_sequence = new ContainersSequence($containers_sequence_settings);
 
             $containers_processor = new ContainersProcessor( $this->name, $this->date, $this->temp_folder, $this->data_folder, $containers_sequence );
 
