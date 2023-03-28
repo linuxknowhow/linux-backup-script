@@ -22,12 +22,12 @@ class Upload {
     }
 
     public function do() {
-        $storage_settings = $this->config->get('storage');
+        $storage_list_settings = $this->config->get('storage_list');
 
-        if ( isset( $storage_settings ) ) {
-            $storage_sequence = new StorageSequence($storage_settings);
+        if ( isset( $storage_list_settings ) ) {
+            $storage_list = new StorageSequence($storage_list_settings);
 
-            $storage_processor = new StorageProcessor( $this->name, $this->date, $this->files, $storage_sequence );
+            $storage_processor = new StorageProcessor( $this->name, $this->date, $this->files, $storage_list );
 
             $storage_processor->do();
 
