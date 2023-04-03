@@ -6,7 +6,10 @@
     },
     "autoload": {
         "psr-4": {
-            "Backup\\":"class"
+            "Backup\\":"src/class"
         }
+    },
+    "scripts": {
+        "cs-fix": "XDEBUG_MODE=off ./tools/php-cs-fixer/vendor/bin/php-cs-fixer --config=.php-cs-fixer.php fix"
     }
 }

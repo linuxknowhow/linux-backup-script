@@ -21,8 +21,11 @@ containers_sequence:
     - 7zip:
         password: test
         volume_size: 1G
+        
+    - gpg:
+        password: "<enter_yours>"
 
-storage:
+storage_list:
     aws:
         region: "<enter_yours>"
         bucket: "<enter_yours>"
