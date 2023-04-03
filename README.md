@@ -20,10 +20,16 @@ This is a linux backup script. It's used for backuping:
 - Chaining of archivers
 - GPG encryption
 
+## Prerequisites﻿
+
+- PHP 7.4, Tar
+- Depending on archivers you want to use: Gzip, 7zip, Rar
+- GPG
+
 ## How to run it:
 
 ```
-php /path/to/script/backup.php --create
+php /path/to/script/src/backup.php --create
 ```
 
 ## Roadmap
@@ -38,4 +44,3 @@ php /path/to/script/backup.php --create
 Please send your questions, feedback and suggestions to:
 
 stephenson.inbox@gmail.com
-
