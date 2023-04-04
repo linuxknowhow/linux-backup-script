@@ -29,7 +29,7 @@ This is a linux backup script. It's used for backuping:
 ## How to run it:
 
 ```
-php /path/to/script/src/backup.php --create
+php /path/to/script/backup.php --create
 ```
 
 ## Roadmap
@@ -44,3 +44,7 @@ php /path/to/script/src/backup.php --create
 Please send your questions, feedback and suggestions to:
 
 stephenson.inbox@gmail.com
+
+## Did you find it useful?
+
+Consider donating to the [Ukrainian Army Forces](https://savelife.in.ua/en/donate-en/#donate-army-card-monthly).
