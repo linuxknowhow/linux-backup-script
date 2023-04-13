@@ -34,7 +34,7 @@ class BackupController {
         $this->name = $this->config->get('name');
 
         if (!is_dir($this->config->get('tmp_folder')) || !is_writable($this->config->get('tmp_folder'))) {
-            abort('The tmp folder "' . $this->config->get('tmp_folder') . '" does not exist or is not writable');
+            throw new Exception('The tmp folder "' . $this->config->get('tmp_folder') . '" does not exist or is not writable');
         }
 
         $tmp_folder_trimmed = trim($this->config->get('tmp_folder'), ' /');
@@ -66,10 +66,10 @@ class BackupController {
     }
 
     private function cleanUp() {
-        $retention_period_years = (int)$this->config->get('retention/retention_period_years');
-        $retention_period_months = (int)$this->config->get('retention/retention_period_months');
-        $retention_period_weeks = (int)$this->config->get('retention/retention_period_weeks');
-        $retention_period_days = (int)$this->config->get('retention/retention_period_days');
+        $retention_period_years = (int)$this->config->get('retention_periods/years');
+        $retention_period_months = (int)$this->config->get('retention_periods/months');
+        $retention_period_weeks = (int)$this->config->get('retention_periods/weeks');
+        $retention_period_days = (int)$this->config->get('retention_periods/days');
 
         $cleanUpModel = new CleanUp($this->date, $retention_period_years, $retention_period_months, $retention_period_weeks, $retention_period_days);
 

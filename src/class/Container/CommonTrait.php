@@ -49,9 +49,9 @@ trait CommonTrait {
                     ->verifyNow();
             }
         } catch (LazyAssertionException $e) {
-            abort($e->getMessage());
+            throw new Exception($e->getMessage());
         } catch (\Throwable $e) {
-            abort("Fatal error: " . $e->getMessage());
+            throw new Exception("Fatal error: " . $e->getMessage());
         }
     }
 }

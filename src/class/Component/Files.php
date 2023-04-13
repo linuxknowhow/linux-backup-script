@@ -16,7 +16,7 @@ class Files {
         $this->folder = "$data_folder/files";
 
         if (Filesystem::createDirectory($this->folder) === false) {
-            abort("Cannot create directory '{$this->folder}'");
+            throw new Exception("Cannot create directory '{$this->folder}'");
         }
     }
 
@@ -35,7 +35,7 @@ class Files {
                         $archiver->create([$source_folder_fullpath], $archive_name, $this->folder);
                     }
                 } else {
-                    abort("Directory '$source_folder_fullpath' doesn't exist or cannot be accessed");
+                    throw new Exception("Directory '$source_folder_fullpath' doesn't exist or cannot be accessed");
                 }
             }
         }

@@ -22,7 +22,7 @@ class Filesystem {
 
     public static function readDir($path) {
         if (!is_dir($path)) {
-            abort('"' . $path . '" is not a directory');
+            throw new Exception('"' . $path . '" is not a directory');
         }
 
         $results = [];
@@ -50,9 +50,9 @@ class Filesystem {
                     ->betweenLength(1, 4096)
                 ->verifyNow();
         } catch (LazyAssertionException $e) {
-            abort($e->getMessage());
+            throw new Exception($e->getMessage());
         } catch (\Throwable $e) {
-            abort("Fatal error: " . $e->getMessage());
+            throw new Exception("Fatal error: " . $e->getMessage());
         }
 
         $command = "rm -rf " . escapeshellarg($path);

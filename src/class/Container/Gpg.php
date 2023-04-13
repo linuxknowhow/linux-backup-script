@@ -23,7 +23,7 @@ class Gpg implements CommonInterface {
                     break;
 
                 default:
-                    abort("Invalid settings in the GPG settings section of the container providers: '" . $setting_key . "'");
+                    throw new Exception("Invalid settings in the GPG settings section of the container providers: '" . $setting_key . "'");
             }
         }
     }
@@ -49,7 +49,7 @@ class Gpg implements CommonInterface {
             $escaped_source = escapeshellarg($source_filename);
 
             if (!$this->password) {
-                abort("You forgot to define a password in the GPG settings");
+                throw new Exception("You forgot to define a password in the GPG settings");
             }
 
             $command = "gpg --symmetric --cipher-algo AES256 --batch --quiet --yes --passphrase-fd 3 -o $escaped_destination -c $escaped_source";
@@ -85,20 +85,20 @@ class Gpg implements CommonInterface {
                         if ($working_directory) {
                             $output_file = "$working_directory/$destination";
                         } else {
-                            abort('Fatal error');
+                            throw new Exception('Fatal error');
                         }
                     }
 
                     if (file_exists($output_file)) {
                         $destination_list[] = $output_file;
                     } else {
-                        abort('Could not locate the archive: "' . $destination .  '"');
+                        throw new Exception('Could not locate the archive: "' . $destination .  '"');
                     }
                 } else {
-                    abort("Cannot create a GPG encrypted file $destination");
+                    throw new Exception("Cannot create a GPG encrypted file $destination");
                 }
             } else {
-                abort("Cannot open a process in shell when creating a GPG encrypted file");
+                throw new Exception("Cannot open a process in shell when creating a GPG encrypted file");
             }
         }
 
@@ -116,13 +116,13 @@ class Gpg implements CommonInterface {
                     ->that($password, 'GPG password')->string()->notEmpty("GPG password cannot be empty")->betweenLength(1, 255)
                     ->verifyNow();
             } catch (LazyAssertionException $e) {
-                abort($e->getMessage());
+                throw new Exception($e->getMessage());
             } catch (\Throwable $e) {
-                abort("Fatal error: " . $e->getMessage());
+                throw new Exception("Fatal error: " . $e->getMessage());
             }
 
             if (!ctype_print_utf($password)) {
-                abort("GPG password cannot contain control characters");
+                throw new Exception("GPG password cannot contain control characters");
             }
 
             $this->password = $password;

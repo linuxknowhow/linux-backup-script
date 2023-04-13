@@ -31,7 +31,7 @@ class Upload {
 
             $storage_processor->do();
         } else {
-            abort('Storage settings cannot be empty');
+            throw new Exception('Storage settings cannot be empty');
         }
     }
 }

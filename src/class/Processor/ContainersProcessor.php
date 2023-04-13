@@ -27,7 +27,7 @@ class ContainersProcessor {
         $source_files = Filesystem::readDir($this->data_folder);
 
         if (!count($this->containers_sequence)) {
-            abort("No containers (archivers) were set in the config file!");
+            throw new Exception("No containers (archivers) were set in the config file!");
         }
 
         $archive_filename = "{$this->name}-{$this->date}";

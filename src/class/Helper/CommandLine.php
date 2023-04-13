@@ -33,7 +33,7 @@ class CommandLine {
 
             return !$result;
         } else {
-            abort("Cannot open a process in shell");
+            throw new Exception("Cannot open a process in shell");
         }
     }
 }

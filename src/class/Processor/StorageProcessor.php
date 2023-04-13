@@ -24,7 +24,7 @@ class StorageProcessor {
 
     public function do() {
         if (!count($this->storage_list)) {
-            abort("No storage destination (\"where to upload backups\") were set in the config file!");
+            throw new Exception("No storage destination (\"where to upload backups\") were set in the config file!");
         }
 
         foreach ($this->storage_list as $storage) {

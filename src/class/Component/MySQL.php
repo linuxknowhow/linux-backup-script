@@ -16,7 +16,7 @@ class MySQL {
         $this->folder = "$data_folder/mysql";
 
         if (Filesystem::createDirectory($this->folder) === false) {
-            abort("Cannot create directory '{$this->folder}'");
+            throw new Exception("Cannot create directory '{$this->folder}'");
         }
     }
 
@@ -32,18 +32,18 @@ class MySQL {
                 $output_folder = "{$this->folder}/$i-{$mysql_login_data['hostname']}";
 
                 if (Filesystem::createDirectory($output_folder) === false) {
-                    abort("Cannot create directory '$output_folder'");
+                    throw new Exception("Cannot create directory '$output_folder'");
                 }
             }
 
             $link = mysqli_connect($mysql_login_data['hostname'], $mysql_login_data['username'], $mysql_login_data['password']);
 
             if (!$link) {
-                abort("MySQL->__construct(): Could not make a MySQL database link using '{$mysql_login_data['username']}@{$mysql_login_data['hostname']}'");
+                throw new Exception("MySQL->__construct(): Could not make a MySQL database link using '{$mysql_login_data['username']}@{$mysql_login_data['hostname']}'");
             }
 
             if (mysqli_connect_error()) {
-                abort('MySQL->__construct(): MySQL connection failed: (' . mysqli_connect_errno() . ') '. mysqli_connect_error());
+                throw new Exception('MySQL->__construct(): MySQL connection failed: (' . mysqli_connect_errno() . ') '. mysqli_connect_error());
             }
 
             if (isset($mysql_login_data['mysql_charset']) && !empty($mysql_login_data['mysql_charset'])) {
@@ -94,11 +94,11 @@ class MySQL {
 
     private function validateFile($file_path) {
         if (!file_exists($file_path)) {
-            abort("Database archive was not created" . PHP_EOL);
+            throw new Exception("Database archive was not created" . PHP_EOL);
         }
 
         if (!Filesystem::assertFileMimetype($file_path, 'text/plain')) {
-            abort("Database archive doesn't have the correct file mime type" . PHP_EOL);
+            throw new Exception("Database archive doesn't have the correct file mime type" . PHP_EOL);
         }
     }
 }

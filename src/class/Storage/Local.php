@@ -20,13 +20,13 @@ class Local implements CommonInterface {
                     $this->destionation_folder = "/$destionation_folder_trimmed/";
 
                     if (Filesystem::createDirectory($this->destionation_folder) === false) {
-                        abort("Cannot create directory '$this->destionation_folder'");
+                        throw new Exception("Cannot create directory '$this->destionation_folder'");
                     }
 
                     break;
 
                 default:
-                    abort("Invalid setting in the Local settings section of the storage providers found: '" . $setting_key . "'");
+                    throw new Exception("Invalid setting in the Local settings section of the storage providers found: '" . $setting_key . "'");
             }
         }
     }
@@ -59,19 +59,19 @@ class Local implements CommonInterface {
                     ->string()
                 ->verifyNow();
         } catch (LazyAssertionException $e) {
-            abort($e->getMessage());
+            throw new Exception($e->getMessage());
         } catch (\Throwable $e) {
-            abort("Fatal error: " . $e->getMessage());
+            throw new Exception("Fatal error: " . $e->getMessage());
         }
 
         if (file_exists($this->destionation_folder) && is_dir($this->destionation_folder) && is_writable($this->destionation_folder)) {
             $filename = basename($filepath);
 
             if (!copy($filepath, $this->destionation_folder . $filename)) {
-                abort("Cannot save backup to local storage: couldn't copy the backup file into destination folder");
+                throw new Exception("Cannot save backup to local storage: couldn't copy the backup file into destination folder");
             }
         } else {
-            abort("Cannot save backup to local storage: destination folder cannot be accessed");
+            throw new Exception("Cannot save backup to local storage: destination folder cannot be accessed");
         }
     }
 

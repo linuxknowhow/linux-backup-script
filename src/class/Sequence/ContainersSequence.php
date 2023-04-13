@@ -37,7 +37,7 @@ class ContainersSequence extends Sequence {
                 break;
 
             default:
-                abort('The sequence of containers in the config file contains an incorrect element: \'' . $key . '\'');
+                throw new Exception('The sequence of containers in the config file contains an incorrect element: \'' . $key . '\'');
         }
     }
 

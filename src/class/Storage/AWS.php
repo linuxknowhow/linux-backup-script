@@ -32,7 +32,7 @@ class AWS implements CommonInterface {
 
         foreach ($settings_keys as $setting_key) {
             if (!in_array($setting_key, $allowed_settings)) {
-                abort("Invalid setting in the AWS settings section of the storage providers found: '" . $setting_key . "'");
+                throw new Exception("Invalid setting in the AWS settings section of the storage providers found: '" . $setting_key . "'");
             }
         }
 
@@ -60,9 +60,9 @@ class AWS implements CommonInterface {
                     ->betweenLength(1, 255, 'Invalid AWS folder setting')
                 ->verifyNow();
         } catch (LazyAssertionException $e) {
-            abort($e->getMessage());
+            throw new Exception($e->getMessage());
         } catch (\Throwable $e) {
-            abort("Fatal error: " . $e->getMessage());
+            throw new Exception("Fatal error: " . $e->getMessage());
         }
 
         $bucket_trimmed = trim($settings['bucket'], '/');
@@ -111,7 +111,7 @@ class AWS implements CommonInterface {
                 }
             }
         } catch (Aws\S3\Exception\S3Exception $e) {
-            abort('There was an error getting list of backups from the AWS S3:' . PHP_EOL. $e->getMessage());
+            throw new Exception('There was an error getting list of backups from the AWS S3:' . PHP_EOL. $e->getMessage());
         }
 
         return $backups;
@@ -136,10 +136,10 @@ class AWS implements CommonInterface {
 
             // Backup was uploadeded successfully
             if ($result['@metadata']['statusCode'] !== 200) {
-                abort("Cannot upload backup file '$filepath' into AWS");
+                throw new Exception("Cannot upload backup file '$filepath' into AWS");
             }
         } catch (MultipartUploadException $e) {
-            abort('There was an error uploading backup to the AWS S3:' . PHP_EOL. $e->getMessage());
+            throw new Exception('There was an error uploading backup to the AWS S3:' . PHP_EOL. $e->getMessage());
         }
     }
 
