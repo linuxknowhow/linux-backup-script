@@ -1,0 +1,54 @@
+name: "my_backup"
+
+tmp_folder: "/backup/"
+
+sources:
+    local_folders:
+        - "/home/user/"
+        - "/etc/"
+
+    mysql:
+        hostname: "127.0.0.1"
+        username: "admin"
+        password: "admin"
+        charset: "utf8mb4"
+        databases: "%"
+
+    cron:
+        - "user"
+
+containers_sequence:
+    - targz:
+        compression_level: "6"
+
+    - rar:
+        compression_level: "5"
+        password: "test"
+        volume_size: "11300K"
+
+    - 7zip:
+        password: "test"
+        volume_size: "111300K"
+
+    - gpg:
+        password: "some_password"
+
+storage_list:
+    - aws:
+        region: "some-region-1"
+        bucket: "bucketname"
+        access_key_id: "00000000000000000000"
+        secret_key: "0000000000000000000000000000000000000000"
+        folder: "some_folder"
+
+    - local:
+        folder: "/mnt/data/Backups/"
+
+retention_periods:
+    days: "3"
+    weeks: "3"
+    months: "3"
+    years: "3"
+
+advanced_settings:
+    process_priority: "5"

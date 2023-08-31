@@ -2,7 +2,8 @@
     "require": {
         "aws/aws-sdk-php": "^3.33",
         "symfony/yaml": "^6.1",
-        "beberlei/assert": "^3.3"
+        "beberlei/assert": "^3.3",
+        "phpunit/phpunit": "^9.6"
     },
     "autoload": {
         "psr-4": {
@@ -10,6 +11,31 @@
         }
     },
     "scripts": {
-        "cs-fix": "XDEBUG_MODE=off ./tools/php-cs-fixer/vendor/bin/php-cs-fixer --config=.php-cs-fixer.php fix"
-    }
+        "cs-fix": "./tools/php-cs-fixer/vendor/bin/php-cs-fixer --config=.php-cs-fixer.php fix",
+        "test": [
+            "Composer\\Config::disableProcessTimeout",
+            "./vendor/bin/phpunit --verbose tests"
+        ],
+        "test-unit": [
+            "Composer\\Config::disableProcessTimeout",
+            "./vendor/bin/simple-phpunit tests/unit --stop-on-failure"
+        ],
+        "test-u": "@test-unit",
+        "test-integration": [
+            "Composer\\Config::disableProcessTimeout",
+            "./vendor/bin/simple-phpunit tests/integration --stop-on-failure"
+        ],
+        "test-i": "@test-integration",
+        "test-functional": [
+            "Composer\\Config::disableProcessTimeout",
+            "./vendor/bin/simple-phpunit tests/functional --stop-on-failure"
+        ],
+        "test-f": "@test-functional"
+    },
+    "authors": [
+        {
+            "name": "Stephen Stephenson",
+            "email": "stephenson.inbox@gmail.com"
+        }
+    ]
 }
