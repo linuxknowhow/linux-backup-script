@@ -19,8 +19,8 @@ containers_sequence:
         compression_level: "6"
 
     - 7zip:
-        password: test
-        volume_size: 1G
+        password: "test"
+        volume_size: "1G"
         
     - gpg:
         password: "<enter_yours>"

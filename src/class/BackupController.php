@@ -49,8 +49,7 @@ class BackupController {
     }
 
     public function cleanupAction() {
-        // TODO: To implement
-        // $this->cleanUp();
+        $this->cleanUp();
     }
 
     private function create() {
@@ -66,24 +65,9 @@ class BackupController {
     }
 
     private function cleanUp() {
-        $retention_period_years = (int)$this->config->get('retention_periods/years');
-        $retention_period_months = (int)$this->config->get('retention_periods/months');
-        $retention_period_weeks = (int)$this->config->get('retention_periods/weeks');
-        $retention_period_days = (int)$this->config->get('retention_periods/days');
+        $action = new Cleanup($this->name, $this->date, $this->config);
 
-        $cleanUpModel = new CleanUp($this->date, $retention_period_years, $retention_period_months, $retention_period_weeks, $retention_period_days);
-
-        /*
-        foreach ($this->storage_list as $storage) {
-            $backups = $storage->getListOfBackups();
-
-            if ( is_array($backups) ) {
-                $cleaned_backups = $cleanUpModel->do($backups);
-
-                $storage->deleteBackups($cleaned_backups);
-            }
-        }
-        */
+        $action->do();
     }
 
     public function extractAction() {

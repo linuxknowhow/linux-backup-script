@@ -8,7 +8,7 @@ use Backup\Component\Cron;
 use Backup\Config;
 use Backup\Helper\Filesystem;
 use Backup\Sequence\ContainersSequence;
-use Backup\Processor\ContainersProcessor;
+use Backup\ContainersProcessor;
 
 class Create {
     private string $name;
@@ -94,6 +94,7 @@ class Create {
             $containers_processor = new ContainersProcessor($this->name, $this->date, $this->temp_folder, $this->data_folder, $containers_sequence);
 
             return $containers_processor->do();
+
         } else {
             throw new Exception('Containers settings cannot be empty');
         }

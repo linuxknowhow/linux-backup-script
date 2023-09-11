@@ -1,6 +1,6 @@
 <?php
 
-namespace Backup\Processor;
+namespace Backup;
 
 use Backup\Sequence\Sequence;
 use Backup\Helper\Filesystem;
@@ -17,7 +17,7 @@ class ContainersProcessor {
         $this->name = $name;
         $this->date = $date;
 
-        $this->temp_folder     = $temp_folder;
+        $this->temp_folder = $temp_folder;
         $this->data_folder = $data_folder;
 
         $this->containers_sequence = $containers_sequence;
@@ -26,13 +26,13 @@ class ContainersProcessor {
     public function do() {
         $source_files = Filesystem::readDir($this->data_folder);
 
-        if (!count($this->containers_sequence)) {
+        if ( !count($this->containers_sequence) ) {
             throw new Exception("No containers (archivers) were set in the config file!");
         }
 
         $archive_filename = "{$this->name}-{$this->date}";
 
-        foreach ($this->containers_sequence as $container) {
+        foreach ( $this->containers_sequence as $container ) {
             $sourse_files_basenames = [];
 
             foreach ($source_files as $source_file) {

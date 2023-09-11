@@ -4,7 +4,6 @@ namespace Backup\Action;
 
 use Backup\Config;
 use Backup\Sequence\StorageSequence;
-use Backup\Processor\StorageProcessor;
 
 class Upload {
     private string $name;
@@ -27,9 +26,20 @@ class Upload {
         if (isset($storage_list_settings)) {
             $storage_list = new StorageSequence($storage_list_settings);
 
-            $storage_processor = new StorageProcessor($this->name, $this->date, $this->files, $storage_list);
+            if ( !count($storage_list) ) {
+                throw new Exception("No storage destination (\"where to upload backups\") were set in the config file!");
+            }
 
-            $storage_processor->do();
+            foreach ($storage_list as $storage) {
+                foreach ($this->files as $file) {
+                    // TODO: To check if $file exists
+
+                    $storage->addFile($file);
+
+                    echo 'Uploading file: ' . $file . PHP_EOL;
+                }
+            }
+
         } else {
             throw new Exception('Storage settings cannot be empty');
         }
