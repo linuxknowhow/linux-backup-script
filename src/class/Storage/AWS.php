@@ -6,7 +6,7 @@ use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
 use Aws\Exception\MultipartUploadException;
 use Aws\S3\MultipartUploader;
-use Backup\Entity;
+use Backup\Entity\Backup;
 use Assert\Assert;
 use Assert\LazyAssertionException;
 
@@ -84,7 +84,7 @@ class AWS implements CommonInterface {
         ]);
     }
 
-    public function getListOfBackups() {
+    public function getListOfBackups(string $backup_name) {
         $backups = [];
 
         if (!empty($this->folder)) {
@@ -99,17 +99,29 @@ class AWS implements CommonInterface {
                 'Prefix' => $prefix,
             ]);
 
+            $backup_name_length = mb_strlen($backup_name);
+
             foreach ($objects as $object) {
-                $backup_file_name = basename($object['Key']);
+                $filepath_parts = pathinfo( $object['Key'] );
 
-                $backup_date = str_replace(['.7z', 'tar.gz', 'tgz' ], '', $backup_file_name);
+                $filename = $filepath_parts['basename'];
 
-                if (preg_match_all('/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/u', $backup_date, $matches, PREG_PATTERN_ORDER)) {
-                    $backup = new Backup($backup_file_name, $object['Key'], (int)$matches[1][0], (int)$matches[2][0], (int)$matches[3][0]);
+                $pos = strpos($filename, $backup_name);
 
-                    $backups[] = $backup;
+                if ( $pos === 0 ) {
+                    $filename_part_potentially_with_date = substr($filename, $backup_name_length+1);
+
+                    if ( !empty($filename_part_potentially_with_date) && is_string($filename_part_potentially_with_date) ) {
+                        if (preg_match_all('/^([0-9]{4})-([0-9]{2})-([0-9]{2})/u', $filename_part_potentially_with_date, $matches, PREG_PATTERN_ORDER)) {
+                            $backup = new Backup($filename, $object['Key'], (int)$matches[1][0], (int)$matches[2][0], (int)$matches[3][0]);
+
+                            $backups[] = $backup;
+                        }
+                    }
                 }
+
             }
+
         } catch (Aws\S3\Exception\S3Exception $e) {
             throw new Exception('There was an error getting list of backups from the AWS S3:' . PHP_EOL. $e->getMessage());
         }

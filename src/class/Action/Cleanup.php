@@ -4,6 +4,7 @@ namespace Backup\Action;
 
 use Backup\Config;
 use Backup\Sequence\StorageSequence;
+use Backup\Model\CleanupModel;
 
 class Cleanup {
     private string $name;
@@ -23,16 +24,29 @@ class Cleanup {
         $retention_period_weeks = (int)$this->config->get('retention_periods/weeks');
         $retention_period_days = (int)$this->config->get('retention_periods/days');
 
-        $cleanUpModel = new CleanUp($this->date, $retention_period_years, $retention_period_months, $retention_period_weeks, $retention_period_days);
+        $cleanUpModel = new CleanupModel($this->date, $retention_period_years, $retention_period_months, $retention_period_weeks, $retention_period_days);
 
-        foreach ($this->storage_list as $storage) {
-            $backups = $storage->getListOfBackups();
+        $storage_list_settings = $this->config->get('storage_list');
 
-            if ( is_array($backups) ) {
-                $cleaned_backups = $cleanUpModel->do($backups);
+        if ( isset($storage_list_settings) ) {
+            $storage_list = new StorageSequence($storage_list_settings);
 
-                // $storage->deleteBackups($cleaned_backups);
+            if ( !count($storage_list) ) {
+                throw new Exception("No storage destination (\"where to upload backups\") were set in the config file!");
             }
+
+            foreach ($storage_list as $storage) {
+                $backups = $storage->getListOfBackups($this->name);
+
+                if ( is_array($backups) ) {
+                    $cleaned_backups = $cleanUpModel->do($backups);
+
+                    // $storage->deleteBackups($cleaned_backups);
+                }
+            }
+
+        } else {
+            throw new Exception('Storage settings cannot be empty');
         }
     }
 }

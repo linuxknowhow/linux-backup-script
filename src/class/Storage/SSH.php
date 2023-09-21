@@ -3,7 +3,8 @@
 namespace Backup\Storage;
 
 class SSH implements CommonInterface {
-    public function getListOfBackups() {
+
+    public function getListOfBackups(string $backup_name) {
     }
 
     public function addFile(string $filepath) {
@@ -11,4 +12,5 @@ class SSH implements CommonInterface {
 
     public function cleanupBackups(array $backups) {
     }
+
 }

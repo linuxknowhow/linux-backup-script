@@ -23,7 +23,7 @@ class Upload {
     public function do() {
         $storage_list_settings = $this->config->get('storage_list');
 
-        if (isset($storage_list_settings)) {
+        if ( isset($storage_list_settings) ) {
             $storage_list = new StorageSequence($storage_list_settings);
 
             if ( !count($storage_list) ) {
@@ -34,7 +34,7 @@ class Upload {
                 foreach ($this->files as $file) {
                     // TODO: To check if $file exists
 
-                    $storage->addFile($file);
+                    // $storage->addFile($file);
 
                     echo 'Uploading file: ' . $file . PHP_EOL;
                 }

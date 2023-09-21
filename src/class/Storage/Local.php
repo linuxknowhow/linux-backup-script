@@ -2,7 +2,7 @@
 
 namespace Backup\Storage;
 
-use Backup\Entity;
+use Backup\Entity\Backup;
 use Backup\Storage\CommonInterface;
 use Backup\Helper\Filesystem;
 use Assert\Assert;
@@ -31,7 +31,7 @@ class Local implements CommonInterface {
         }
     }
 
-    public function getListOfBackups() {
+    public function getListOfBackups(string $backup_name) {
         $backup_files = array_diff(scandir($this->destionation_folder), ['..', '.']);
 
         $backups = [];

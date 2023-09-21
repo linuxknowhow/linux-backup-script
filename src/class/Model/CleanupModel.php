@@ -2,10 +2,10 @@
 
 namespace Backup\Model;
 
-use Backup\Entity;
+use Backup\Entity\Backup;
 use DateTime;
 
-class CleanUp {
+class CleanupModel {
     private string $date;
 
     private int $retention_period_years;
