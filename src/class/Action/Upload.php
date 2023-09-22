@@ -34,7 +34,7 @@ class Upload {
                 foreach ($this->files as $file) {
                     // TODO: To check if $file exists
 
-                    // $storage->addFile($file);
+                    $storage->addFile($file);
 
                     echo 'Uploading file: ' . $file . PHP_EOL;
                 }

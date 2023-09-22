@@ -41,7 +41,7 @@ class Cleanup {
                 if ( is_array($backups) ) {
                     $cleaned_backups = $cleanUpModel->do($backups);
 
-                    // $storage->deleteBackups($cleaned_backups);
+                    $storage->deleteBackups($cleaned_backups);
                 }
             }
 

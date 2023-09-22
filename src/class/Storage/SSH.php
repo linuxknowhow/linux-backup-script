@@ -10,7 +10,7 @@ class SSH implements CommonInterface {
     public function addFile(string $filepath) {
     }
 
-    public function cleanupBackups(array $backups) {
+    public function deleteBackups(array $backups) {
     }
 
 }

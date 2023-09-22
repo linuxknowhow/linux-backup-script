@@ -87,13 +87,14 @@ class AWS implements CommonInterface {
     public function getListOfBackups(string $backup_name) {
         $backups = [];
 
-        if (!empty($this->folder)) {
+        if ( !empty($this->folder) ) {
             $prefix = $this->folder;
         } else {
             $prefix = '';
         }
 
         try {
+            // List only files
             $objects = $this->s3->getIterator('ListObjects', [
                 'Bucket' => $this->bucket,
                 'Prefix' => $prefix,
@@ -155,9 +156,9 @@ class AWS implements CommonInterface {
         }
     }
 
-    public function cleanupBackups(array $backups) {
+    public function deleteBackups(array $backups) {
         foreach ($backups as $backup) {
-            if (false === $backup->isPreserved() && !empty($backup->getFilename())) {
+            if ( false === $backup->isPreserved() && !empty( $backup->getFullpath() ) ) {
                 $this->s3->deleteObject([
                     'Bucket' => $this->bucket,
                     'Key' => $backup->getFullpath(),
