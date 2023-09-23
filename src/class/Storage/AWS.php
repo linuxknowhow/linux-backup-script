@@ -114,9 +114,11 @@ class AWS implements CommonInterface {
 
                     if ( !empty($filename_part_potentially_with_date) && is_string($filename_part_potentially_with_date) ) {
                         if (preg_match_all('/^([0-9]{4})-([0-9]{2})-([0-9]{2})/u', $filename_part_potentially_with_date, $matches, PREG_PATTERN_ORDER)) {
-                            $backup = new Backup($filename, $object['Key'], (int)$matches[1][0], (int)$matches[2][0], (int)$matches[3][0]);
+                            if ( !str_ends_with($object['Key'], '/') ) {
+                                $backup = new Backup($filename, $object['Key'], (int)$matches[1][0], (int)$matches[2][0], (int)$matches[3][0]);
 
-                            $backups[] = $backup;
+                                $backups[] = $backup;
+                            }
                         }
                     }
                 }
