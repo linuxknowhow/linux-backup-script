@@ -7,6 +7,7 @@ use Backup\Container\CommonTrait;
 use Assert\Assert;
 use Assert\LazyAssertionException;
 use Backup\Helper\Filesystem;
+use Exception;
 
 class Gpg implements CommonInterface {
     use CommonTrait;

@@ -4,6 +4,7 @@ namespace Backup\Helper;
 
 use Assert\Assert;
 use Assert\LazyAssertionException;
+use Exception;
 
 class CommandLine {
     public static function exec(string $command, ?string $cwd = null, string &$output = null): bool {

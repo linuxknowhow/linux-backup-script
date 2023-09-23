@@ -5,6 +5,7 @@ namespace Backup\Helper;
 use Backup\Helper\CommandLine;
 use Assert\Assert;
 use Assert\LazyAssertionException;
+use Exception;
 
 class Filesystem {
     public static function createDirectory($path) {

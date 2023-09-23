@@ -5,6 +5,7 @@ namespace Backup\Action;
 use Backup\Config;
 use Backup\Sequence\StorageSequence;
 use Backup\Model\CleanupModel;
+use Exception;
 
 class Cleanup {
     private string $name;

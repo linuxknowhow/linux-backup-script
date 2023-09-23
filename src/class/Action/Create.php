@@ -9,6 +9,7 @@ use Backup\Config;
 use Backup\Helper\Filesystem;
 use Backup\Sequence\ContainersSequence;
 use Backup\ContainersProcessor;
+use Exception;
 
 class Create {
     private string $name;

@@ -8,6 +8,7 @@ use Assert\Assert;
 use Assert\LazyAssertionException;
 use Backup\Helper\CommandLine;
 use Backup\Helper\Filesystem;
+use Exception;
 
 class SevenZip implements CommonInterface {
     use CommonTrait;

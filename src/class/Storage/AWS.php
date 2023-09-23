@@ -9,6 +9,7 @@ use Aws\S3\MultipartUploader;
 use Backup\Entity\Backup;
 use Assert\Assert;
 use Assert\LazyAssertionException;
+use Exception;
 
 class AWS implements CommonInterface {
     private string $region;

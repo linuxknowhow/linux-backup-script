@@ -4,6 +4,7 @@ namespace Backup\Container;
 
 use Assert\Assert;
 use Assert\LazyAssertionException;
+use Exception;
 
 trait CommonTrait {
     private ?string $working_directory = null;
@@ -48,8 +49,10 @@ trait CommonTrait {
                         ->betweenLength(1, 4096)
                     ->verifyNow();
             }
+
         } catch (LazyAssertionException $e) {
             throw new Exception($e->getMessage());
+
         } catch (\Throwable $e) {
             throw new Exception("Fatal error: " . $e->getMessage());
         }

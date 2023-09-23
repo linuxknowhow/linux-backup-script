@@ -7,6 +7,7 @@ use Backup\Sequence\Sequence;
 use Backup\Storage\AWS;
 use Backup\Storage\Local;
 use Backup\Storage\SSH;
+use Exception;
 
 class StorageSequence extends Sequence {
     protected function processConfigItem($key, $settings) {

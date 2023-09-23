@@ -4,6 +4,7 @@ namespace Backup\Component;
 
 use Backup\Container\TarGzip;
 use Backup\Helper\Filesystem;
+use Exception;
 
 class Files {
     private array $source_folders;

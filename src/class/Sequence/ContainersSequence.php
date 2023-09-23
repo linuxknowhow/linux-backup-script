@@ -8,6 +8,7 @@ use Backup\Container\TarGzip;
 use Backup\Container\SevenZip;
 use Backup\Container\Rar;
 use Backup\Container\Gpg;
+use Exception;
 
 class ContainersSequence extends Sequence {
     protected function processConfigItem($key, $settings) {

@@ -4,6 +4,7 @@ namespace Backup;
 
 use Backup\Sequence\Sequence;
 use Backup\Helper\Filesystem;
+use Exception;
 
 class ContainersProcessor {
     private string $date;
