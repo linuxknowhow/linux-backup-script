@@ -4,6 +4,7 @@ namespace Backup\Component;
 
 use Backup\Helper\Filesystem;
 use Backup\Helper\CommandLine;
+use Exception;
 
 class MySQL {
     private array $mysql_login_data_list;
@@ -92,13 +93,15 @@ class MySQL {
         }
     }
 
-    private function validateFile($file_path) {
-        if (!file_exists($file_path)) {
+    private function validateFile($filepath) {
+        if (!file_exists($filepath)) {
             throw new Exception("Database archive was not created" . PHP_EOL);
         }
 
-        if (!Filesystem::assertFileMimetype($file_path, 'text/plain')) {
+        if (!Filesystem::assertFileMimetype($filepath, 'application/sql')) {
+            echo mime_content_type($filepath) . PHP_EOL;
             throw new Exception("Database archive doesn't have the correct file mime type" . PHP_EOL);
+            
         }
     }
 }
