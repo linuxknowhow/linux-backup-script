@@ -65,7 +65,7 @@ class MySQL {
 
                 $result = mysqli_query($link, "SHOW DATABASES WHERE $where");
             } else {
-                $result = mysqli_query($link, "SHOW DATABASES'");
+                $result = mysqli_query($link, "SHOW DATABASES");
             }
 
             $skip_databases = ['performance_schema'];
