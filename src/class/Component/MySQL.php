@@ -99,9 +99,7 @@ class MySQL {
         }
 
         if (!Filesystem::assertFileMimetype($filepath, 'application/sql')) {
-            echo mime_content_type($filepath) . PHP_EOL;
             throw new Exception("Database archive doesn't have the correct file mime type" . PHP_EOL);
-            
         }
     }
 }
