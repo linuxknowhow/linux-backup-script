@@ -16,7 +16,7 @@ class Cron {
         $this->folder = "$data_folder/cron";
 
         if (Filesystem::createDirectory($this->folder) === false) {
-            abort("Cannot create directory '{$this->folder}'");
+            throw new Exception("Cannot create directory '{$this->folder}'");
         }
     }
 
@@ -31,7 +31,7 @@ class Cron {
             $result = CommandLine::exec($command, null, $output);
 
             if (!$result) {
-                abort("Cannot obtain the list of cron jobs for the following user: '$cron_user_escaped'");
+                throw new Exception("Cannot obtain the list of cron jobs for the following user: '$cron_user_escaped'");
             }
 
             file_put_contents("{$this->folder}/$cron_user", $output);

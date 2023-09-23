@@ -24,7 +24,7 @@ class TarGzip implements CommonInterface {
                     break;
 
                 default:
-                    abort("Invalid settings in the TarGzip archiver settings section of the container providers: '" . $setting_key . "'");
+                    throw new Exception("Invalid settings in the TarGzip archiver settings section of the container providers: '" . $setting_key . "'");
             }
         }
     }
@@ -64,17 +64,17 @@ class TarGzip implements CommonInterface {
                 if ($working_directory) {
                     $output_file = "$working_directory/$destination";
                 } else {
-                    abort('Fatal error');
+                    throw new Exception('Fatal error');
                 }
             }
 
             if (file_exists($output_file)) {
                 return [$output_file];
             } else {
-                abort('Could not locate the archive: "' . $output_file .  '"');
+                throw new Exception('Could not locate the archive: "' . $output_file .  '"');
             }
         } else {
-            abort("Cannot create a TarGzip archive $destination");
+            throw new Exception("Cannot create a TarGzip archive $destination");
         }
     }
 
@@ -91,9 +91,9 @@ class TarGzip implements CommonInterface {
                     ->between(1, 9)
                 ->verifyNow();
         } catch (LazyAssertionException $e) {
-            abort($e->getMessage());
+            throw new Exception($e->getMessage());
         } catch (\Throwable $e) {
-            abort("Fatal error: " . $e->getMessage());
+            throw new Exception("Fatal error: " . $e->getMessage());
         }
 
         $this->compression_level = $compression_level;

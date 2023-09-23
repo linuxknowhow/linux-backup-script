@@ -22,7 +22,7 @@ class StorageSequence extends Sequence {
                 break;
 
             default:
-                abort('The list of storage providers in the config file contains an incorrect element: \'' . $key . '\'');
+                throw new Exception('The list of storage providers in the config file contains an incorrect element: \'' . $key . '\'');
         }
     }
 

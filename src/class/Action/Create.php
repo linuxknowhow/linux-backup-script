@@ -8,7 +8,7 @@ use Backup\Component\Cron;
 use Backup\Config;
 use Backup\Helper\Filesystem;
 use Backup\Sequence\ContainersSequence;
-use Backup\Processor\ContainersProcessor;
+use Backup\ContainersProcessor;
 
 class Create {
     private string $name;
@@ -29,11 +29,11 @@ class Create {
         $this->config = $config;
 
         if (Filesystem::createDirectory($this->temp_folder) === false) {
-            abort("Cannot create directory '$this->temp_folder'");
+            throw new Exception("Cannot create directory '$this->temp_folder'");
         }
 
         if (Filesystem::createDirectory($this->data_folder) === false) {
-            abort("Cannot create directory '$this->data_folder'");
+            throw new Exception("Cannot create directory '$this->data_folder'");
         }
     }
 
@@ -46,7 +46,7 @@ class Create {
             } elseif (is_array($source_folders)) {
                 $files = new Files($this->data_folder, $source_folders);
             } else {
-                abort('Incorrect "sources/local_folders" config value');
+                throw new Exception('Incorrect "sources/local_folders" config value');
             }
 
             $files->create();
@@ -63,10 +63,10 @@ class Create {
                 } elseif (is_array($first_element)) {
                     $mysql = new MySQL($this->data_folder, $mysql_list);
                 } else {
-                    abort('Incorrect "sources/mysql" config value');
+                    throw new Exception('Incorrect "sources/mysql" config value');
                 }
             } else {
-                abort('Incorrect "sources/mysql" config value');
+                throw new Exception('Incorrect "sources/mysql" config value');
             }
 
             $mysql->create();
@@ -80,7 +80,7 @@ class Create {
             } elseif (is_array($cron_users)) {
                 $cron = new Cron($this->data_folder, $cron_users);
             } else {
-                abort('Incorrect "sources/cron" config value');
+                throw new Exception('Incorrect "sources/cron" config value');
             }
 
             $cron->create();
@@ -94,8 +94,9 @@ class Create {
             $containers_processor = new ContainersProcessor($this->name, $this->date, $this->temp_folder, $this->data_folder, $containers_sequence);
 
             return $containers_processor->do();
+
         } else {
-            abort('Containers settings cannot be empty');
+            throw new Exception('Containers settings cannot be empty');
         }
     }
 }

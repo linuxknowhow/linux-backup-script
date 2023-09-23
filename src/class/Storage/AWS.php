@@ -6,7 +6,7 @@ use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
 use Aws\Exception\MultipartUploadException;
 use Aws\S3\MultipartUploader;
-use Backup\Entity;
+use Backup\Entity\Backup;
 use Assert\Assert;
 use Assert\LazyAssertionException;
 
@@ -32,7 +32,7 @@ class AWS implements CommonInterface {
 
         foreach ($settings_keys as $setting_key) {
             if (!in_array($setting_key, $allowed_settings)) {
-                abort("Invalid setting in the AWS settings section of the storage providers found: '" . $setting_key . "'");
+                throw new Exception("Invalid setting in the AWS settings section of the storage providers found: '" . $setting_key . "'");
             }
         }
 
@@ -60,9 +60,9 @@ class AWS implements CommonInterface {
                     ->betweenLength(1, 255, 'Invalid AWS folder setting')
                 ->verifyNow();
         } catch (LazyAssertionException $e) {
-            abort($e->getMessage());
+            throw new Exception($e->getMessage());
         } catch (\Throwable $e) {
-            abort("Fatal error: " . $e->getMessage());
+            throw new Exception("Fatal error: " . $e->getMessage());
         }
 
         $bucket_trimmed = trim($settings['bucket'], '/');
@@ -84,34 +84,49 @@ class AWS implements CommonInterface {
         ]);
     }
 
-    public function getListOfBackups() {
+    public function getListOfBackups(string $backup_name) {
         $backups = [];
 
-        if (!empty($this->folder)) {
+        if ( !empty($this->folder) ) {
             $prefix = $this->folder;
         } else {
             $prefix = '';
         }
 
         try {
+            // List only files
             $objects = $this->s3->getIterator('ListObjects', [
                 'Bucket' => $this->bucket,
                 'Prefix' => $prefix,
             ]);
 
+            $backup_name_length = mb_strlen($backup_name);
+
             foreach ($objects as $object) {
-                $backup_file_name = basename($object['Key']);
+                $filepath_parts = pathinfo( $object['Key'] );
 
-                $backup_date = str_replace(['.7z', 'tar.gz', 'tgz' ], '', $backup_file_name);
+                $filename = $filepath_parts['basename'];
 
-                if (preg_match_all('/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/u', $backup_date, $matches, PREG_PATTERN_ORDER)) {
-                    $backup = new Backup($backup_file_name, $object['Key'], (int)$matches[1][0], (int)$matches[2][0], (int)$matches[3][0]);
+                $pos = strpos($filename, $backup_name);
 
-                    $backups[] = $backup;
+                if ( $pos === 0 ) {
+                    $filename_part_potentially_with_date = substr($filename, $backup_name_length+1);
+
+                    if ( !empty($filename_part_potentially_with_date) && is_string($filename_part_potentially_with_date) ) {
+                        if (preg_match_all('/^([0-9]{4})-([0-9]{2})-([0-9]{2})/u', $filename_part_potentially_with_date, $matches, PREG_PATTERN_ORDER)) {
+                            if ( !str_ends_with($object['Key'], '/') ) {
+                                $backup = new Backup($filename, $object['Key'], (int)$matches[1][0], (int)$matches[2][0], (int)$matches[3][0]);
+
+                                $backups[] = $backup;
+                            }
+                        }
+                    }
                 }
+
             }
+
         } catch (Aws\S3\Exception\S3Exception $e) {
-            abort('There was an error getting list of backups from the AWS S3:' . PHP_EOL. $e->getMessage());
+            throw new Exception('There was an error getting list of backups from the AWS S3:' . PHP_EOL. $e->getMessage());
         }
 
         return $backups;
@@ -136,16 +151,16 @@ class AWS implements CommonInterface {
 
             // Backup was uploadeded successfully
             if ($result['@metadata']['statusCode'] !== 200) {
-                abort("Cannot upload backup file '$filepath' into AWS");
+                throw new Exception("Cannot upload backup file '$filepath' into AWS");
             }
         } catch (MultipartUploadException $e) {
-            abort('There was an error uploading backup to the AWS S3:' . PHP_EOL. $e->getMessage());
+            throw new Exception('There was an error uploading backup to the AWS S3:' . PHP_EOL. $e->getMessage());
         }
     }
 
-    public function cleanupBackups(array $backups) {
+    public function deleteBackups(array $backups) {
         foreach ($backups as $backup) {
-            if (false === $backup->isPreserved() && !empty($backup->getFilename())) {
+            if ( false === $backup->isPreserved() && !empty( $backup->getFullpath() ) ) {
                 $this->s3->deleteObject([
                     'Bucket' => $this->bucket,
                     'Key' => $backup->getFullpath(),

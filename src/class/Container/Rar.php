@@ -33,7 +33,7 @@ class Rar implements CommonInterface {
                     break;
 
                 default:
-                    abort("Invalid settings in the RAR archiver settings section of the container providers: '" . $setting_key . "'");
+                    throw new Exception("Invalid settings in the RAR archiver settings section of the container providers: '" . $setting_key . "'");
             }
         }
     }
@@ -129,7 +129,7 @@ class Rar implements CommonInterface {
                             $glob_path_multi = "$working_directory/$destination_filename.part*." . self::EXTENSION;
                         }
                     } else {
-                        abort('Fatal error');
+                        throw new Exception('Fatal error');
                     }
                 }
 
@@ -142,17 +142,17 @@ class Rar implements CommonInterface {
                 $destination = array_merge($destination_single, $destination_multi);
 
                 if (empty($destination)) {
-                    abort('Could not locate the archive(s): "' . $glob_path_single .  '" or "' . $glob_path_multi . '"');
+                    throw new Exception('Could not locate the archive(s): "' . $glob_path_single .  '" or "' . $glob_path_multi . '"');
                 }
 
                 return $destination;
             } else {
-                abort("Cannot create a RAR archive $destination");
+                throw new Exception("Cannot create a RAR archive $destination");
             }
 
             return !$result;
         } else {
-            abort("Cannot open a process in shell when creating a RAR archive");
+            throw new Exception("Cannot open a process in shell when creating a RAR archive");
         }
     }
 
@@ -167,13 +167,13 @@ class Rar implements CommonInterface {
                     ->that($password, 'Rar password')->string()->notEmpty("Rar password cannot be empty")->betweenLength(1, 127)
                     ->verifyNow();
             } catch (LazyAssertionException $e) {
-                abort($e->getMessage());
+                throw new Exception($e->getMessage());
             } catch (\Throwable $e) {
-                abort("Fatal error: " . $e->getMessage());
+                throw new Exception("Fatal error: " . $e->getMessage());
             }
 
             if (!ctype_print_utf($password)) {
-                abort("RAR password cannot contain control characters");
+                throw new Exception("RAR password cannot contain control characters");
             }
 
             $this->password = $password;
@@ -192,9 +192,9 @@ class Rar implements CommonInterface {
                         ->between(0, 5, "RAR compression level can only be set between 0 and 5 (0-store, 3-default, 5-maximal)")
                     ->verifyNow();
             } catch (LazyAssertionException $e) {
-                abort($e->getMessage());
+                throw new Exception($e->getMessage());
             } catch (\Throwable $e) {
-                abort("Fatal error: " . $e->getMessage());
+                throw new Exception("Fatal error: " . $e->getMessage());
             }
         }
 
@@ -213,9 +213,9 @@ class Rar implements CommonInterface {
                         ->regex($regex, "RAR volume size is incorrect. Supported binary prefixes: k, M, G, T")
                     ->verifyNow();
             } catch (LazyAssertionException $e) {
-                abort($e->getMessage());
+                throw new Exception($e->getMessage());
             } catch (\Throwable $e) {
-                abort("Fatal error: " . $e->getMessage());
+                throw new Exception("Fatal error: " . $e->getMessage());
             }
 
             preg_match($regex, $volume_size, $matches);
@@ -246,7 +246,7 @@ class Rar implements CommonInterface {
                         break;
 
                     default:
-                        abort('Internal error: incorrect binary prefix in RAR volume size');
+                        throw new Exception('Internal error: incorrect binary prefix in RAR volume size');
                 }
 
                 $volume_size_number = $bytes;
@@ -262,9 +262,9 @@ class Rar implements CommonInterface {
                         ->between(1000, PHP_INT_MAX, "RAR volume size can only be set between 1000 bytes and " . PHP_INT_MAX . " bytes")
                     ->verifyNow();
             } catch (LazyAssertionException $e) {
-                abort($e->getMessage());
+                throw new Exception($e->getMessage());
             } catch (\Throwable $e) {
-                abort("Fatal error: " . $e->getMessage());
+                throw new Exception("Fatal error: " . $e->getMessage());
             }
 
             $this->volume_size = $volume_size_number;

@@ -25,11 +25,11 @@ abstract class Sequence implements Iterator, Countable {
 
                     return;
                 } else {
-                    abort('The sequence of containers in the settings is incorrect');
+                    throw new Exception('The sequence of containers in the settings is incorrect');
                 }
             }
         } else {
-            abort('The sequence of containers in the settings is empty or incorrect');
+            throw new Exception('The sequence of containers in the settings is empty or incorrect');
         }
     }
 
@@ -38,7 +38,7 @@ abstract class Sequence implements Iterator, Countable {
         $settings = reset($item);
 
         if (!is_string($key) || !is_array($settings)) {
-            abort("The config file contains errors");
+            throw new Exception("The config file contains errors");
         }
 
         $key_trimmed = trim($key);

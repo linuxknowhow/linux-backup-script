@@ -34,7 +34,7 @@ class SevenZip implements CommonInterface {
                     break;
 
                 default:
-                    abort("Invalid settings in the 7-Zip archiver settings section of the container providers: '" . $setting_key . "'");
+                    throw new Exception("Invalid settings in the 7-Zip archiver settings section of the container providers: '" . $setting_key . "'");
             }
         }
     }
@@ -103,7 +103,7 @@ class SevenZip implements CommonInterface {
                         $glob_path_multi = "$working_directory/$destination_filename." . self::EXTENSION . '.*';
                     }
                 } else {
-                    abort('Fatal error');
+                    throw new Exception('Fatal error');
                 }
             }
 
@@ -116,12 +116,12 @@ class SevenZip implements CommonInterface {
             $destination = array_merge($destination_single, $destination_multi);
 
             if (empty($destination)) {
-                abort('Could not locate the archive(s): "' . $glob_path_single .  '" or "' . $glob_path_multi . '"');
+                throw new Exception('Could not locate the archive(s): "' . $glob_path_single .  '" or "' . $glob_path_multi . '"');
             }
 
             return $destination;
         } else {
-            abort("Cannot create a 7-Zip archive $destination");
+            throw new Exception("Cannot create a 7-Zip archive $destination");
         }
     }
 
@@ -136,13 +136,13 @@ class SevenZip implements CommonInterface {
                     ->that($password, '7-Zip password')->string()->notEmpty("7-Zip password cannot be empty")->betweenLength(1, 127)
                     ->verifyNow();
             } catch (LazyAssertionException $e) {
-                abort($e->getMessage());
+                throw new Exception($e->getMessage());
             } catch (\Throwable $e) {
-                abort("Fatal error: " . $e->getMessage());
+                throw new Exception("Fatal error: " . $e->getMessage());
             }
 
             if (!ctype_print_utf($password)) {
-                abort("7-Zip password cannot contain control characters");
+                throw new Exception("7-Zip password cannot contain control characters");
             }
 
             $this->password = $password;
@@ -160,9 +160,9 @@ class SevenZip implements CommonInterface {
                     ->between(0, 9, "7-Zip compression level can only be set between 0 and 9 (0-copy mode, 5-default, 9-ultra)")
                 ->verifyNow();
         } catch (LazyAssertionException $e) {
-            abort($e->getMessage());
+            throw new Exception($e->getMessage());
         } catch (\Throwable $e) {
-            abort("Fatal error: " . $e->getMessage());
+            throw new Exception("Fatal error: " . $e->getMessage());
         }
 
         $this->compression_level = null;
@@ -180,9 +180,9 @@ class SevenZip implements CommonInterface {
                         ->regex($regex, "7-Zip volume size is incorrect. Supported binary prefixes: k, M, G, T")
                     ->verifyNow();
             } catch (LazyAssertionException $e) {
-                abort($e->getMessage());
+                throw new Exception($e->getMessage());
             } catch (\Throwable $e) {
-                abort("Fatal error: " . $e->getMessage());
+                throw new Exception("Fatal error: " . $e->getMessage());
             }
 
             preg_match($regex, $volume_size, $matches);
@@ -213,7 +213,7 @@ class SevenZip implements CommonInterface {
                         break;
 
                     default:
-                        abort('Internal error: incorrect binary prefix in 7-Zip volume size');
+                        throw new Exception('Internal error: incorrect binary prefix in 7-Zip volume size');
                 }
 
                 $volume_size_number = $bytes;
@@ -229,9 +229,9 @@ class SevenZip implements CommonInterface {
                         ->between(1000, PHP_INT_MAX, "7-Zip volume size can only be set between 1000 bytes and " . PHP_INT_MAX . " bytes")
                     ->verifyNow();
             } catch (LazyAssertionException $e) {
-                abort($e->getMessage());
+                throw new Exception($e->getMessage());
             } catch (\Throwable $e) {
-                abort("Fatal error: " . $e->getMessage());
+                throw new Exception("Fatal error: " . $e->getMessage());
             }
 
             $this->volume_size = $volume_size_number;
