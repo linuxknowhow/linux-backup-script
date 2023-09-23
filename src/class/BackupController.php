@@ -14,6 +14,7 @@ use Backup\StorageList;
 use Backup\Sequence\ContainersSequence;
 use Backup\Sequence\StorageSequence;
 use Backup\Helper\Filesystem;
+use Exception;
 
 class BackupController {
     private Config $config;
