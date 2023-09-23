@@ -22,14 +22,20 @@ This is a linux backup script. It's used for backuping:
 
 ## Prerequisites﻿
 
-- PHP 7.4, Tar
+- PHP 8.2, Tar
 - Depending on archivers you want to use: Gzip, 7zip, Rar
 - GPG
 
 ## How to run it:
 
+Create and upload backup:
 ```
 php /path/to/script/backup.php --create
+```
+
+Delete old backups:
+```
+php /path/to/script/backup.php --clean
 ```
 
 ## Roadmap
