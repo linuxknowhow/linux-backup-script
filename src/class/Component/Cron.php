@@ -4,6 +4,7 @@ namespace Backup\Component;
 
 use Backup\Helper\Filesystem;
 use Backup\Helper\CommandLine;
+use Exception;
 
 class Cron {
     private array $cron_users;

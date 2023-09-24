@@ -7,6 +7,7 @@ use Backup\Storage\CommonInterface;
 use Backup\Helper\Filesystem;
 use Assert\Assert;
 use Assert\LazyAssertionException;
+use Exception;
 
 class Local implements CommonInterface {
     private $destionation_folder;

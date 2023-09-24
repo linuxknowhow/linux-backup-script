@@ -23,6 +23,7 @@ This is a linux backup script. It's used for backuping:
 ## Prerequisites﻿
 
 - PHP 8.2, Tar
+- MySQLi extension for PHP
 - Depending on archivers you want to use: Gzip, 7zip, Rar
 - GPG
 

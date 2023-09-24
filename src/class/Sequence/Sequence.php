@@ -4,6 +4,7 @@ namespace Backup\Sequence;
 
 use Iterator;
 use Countable;
+use Exception;
 
 abstract class Sequence implements Iterator, Countable {
     protected $position = 0;
