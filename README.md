@@ -2,7 +2,7 @@
 
 ## What is it?
 
-This is a linux backup script. It's used for backuping:
+This script is a command-line utility for backuping linux servers. It's used for backuping:
 
 - Folders
 - MySQL databases
