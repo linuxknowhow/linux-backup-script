@@ -62,7 +62,7 @@ sources:
         - "/root"
         - "/var/www"
 
-    mysql_databases:
+    mysql:
         - hostname: "127.0.0.1"
           username: "root"
           password:
@@ -72,7 +72,9 @@ sources:
         - "root"
 
 containers_sequence:
-    - targz
+    - targz:
+        compression_level: "6"
+
     - gpg:
         password: "<enter_yours>"
 

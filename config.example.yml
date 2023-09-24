@@ -8,7 +8,7 @@ sources:
         - "/root"
         - "/var/www"
 
-    mysql_databases:
+    mysql:
         - hostname: "127.0.0.1"
           username: "root"
           password:
