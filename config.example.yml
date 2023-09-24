@@ -1,12 +1,12 @@
-name: "pc"
+name: "vps"
 
 tmp_folder: "/tmp/linux-backup-script/"
 
 sources:
     local_folders:
-        - "/home/user/"
-        - "/var/www/"
-        - "/etc/"
+        - "/etc"
+        - "/root"
+        - "/var/www"
 
     mysql_databases:
         - hostname: "127.0.0.1"

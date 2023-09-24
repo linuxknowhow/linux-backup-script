@@ -29,14 +29,66 @@ This is a linux backup script. It's used for backuping:
 
 ## How to run it:
 
-Create and upload backup:
+Run in the command line or using cron:
 ```
-php /path/to/script/backup.php --create
+php /path/scripts/linux-backup-script/src/backup.php --create --cleanup
 ```
 
-Delete old backups:
+`--create` will create and upload a backup
+
+`--cleanup` will delete old backups, according to retention period settings
+
+## Installation
+1. mkdir /root/scripts/
+2. cd /root/scripts/
+3. git clone https://github.com/stepcodebox/linux-backup-script.git
+4. composer install
+5. cp config.example.yml config.yml
+6. Edit config.yml according to your needs
+7. Run to test and add to cron:
+
+`php /root/scripts/linux-backup-script/src/backup.php --create --cleanup`
+
+## Config
+
 ```
-php /path/to/script/backup.php --clean
+name: "vps"
+
+tmp_folder: "/tmp/linux-backup-script/"
+
+sources:
+    local_folders:
+        - "/etc"
+        - "/root"
+        - "/var/www"
+
+    mysql_databases:
+        - hostname: "127.0.0.1"
+          username: "root"
+          password:
+          charset: "utf8mb4"
+
+containers_sequence:
+    - targz
+    - gpg:
+        password: "<enter_yours>"
+
+storage_list:
+    - aws:
+        region: "<enter_yours>"
+        bucket: "<enter_yours>"
+        access_key_id: "<enter_yours>"
+        secret_key: "<enter_yours>"
+        folder: "<enter_yours>"
+
+    - local:
+        folder: "/mnt/external_storage/"
+
+retention_periods:
+    days: "3"
+    weeks: "3"
+    months: "3"
+    years: "3"
 ```
 
 ## Roadmap
