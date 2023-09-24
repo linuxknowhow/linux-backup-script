@@ -68,6 +68,9 @@ sources:
           password:
           charset: "utf8mb4"
 
+    cron:
+        - "root"
+
 containers_sequence:
     - targz
     - gpg:
