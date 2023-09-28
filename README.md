@@ -23,7 +23,7 @@ This script is a command-line utility for backuping linux servers. It's used for
 ## Prerequisites﻿
 
 - PHP 8.2, Tar
-- MySQLi extension for PHP
+- PHP extensions: php8.2-mysqli php8.2-xml php8.2-simplexml
 - Depending on archivers you want to use: Gzip, 7zip, Rar
 - GPG
 
@@ -31,7 +31,7 @@ This script is a command-line utility for backuping linux servers. It's used for
 
 Run in the command line or using cron:
 ```
-php /path/scripts/linux-backup-script/src/backup.php --create --cleanup
+php /path/scripts/linux-backup-script/bin/backup.php --create --cleanup
 ```
 
 `--create` will create and upload a backup
@@ -47,7 +47,7 @@ php /path/scripts/linux-backup-script/src/backup.php --create --cleanup
 6. Edit config.yml according to your needs
 7. Run to test and add to cron:
 
-`php /root/scripts/linux-backup-script/src/backup.php --create --cleanup`
+`php /root/scripts/linux-backup-script/bin/backup.php --create --cleanup`
 
 ## Config
 
