@@ -34,11 +34,17 @@ class BackupController {
 
         $this->name = $this->config->get('name');
 
-        if (!is_dir($this->config->get('tmp_folder')) || !is_writable($this->config->get('tmp_folder'))) {
-            throw new Exception('The tmp folder "' . $this->config->get('tmp_folder') . '" does not exist or is not writable');
+        $tmp_folder = $this->config->get('tmp_folder');
+
+        if (!is_dir($tmp_folder) || !is_writable($tmp_folder)) {
+            mkdir($tmp_folder, 0700);
         }
 
-        $tmp_folder_trimmed = trim($this->config->get('tmp_folder'), ' /');
+        if (!is_dir($tmp_folder) || !is_writable($tmp_folder)) {
+            throw new Exception('The tmp folder "' . $tmp_folder . '" does not exist or is not writable');
+        }
+
+        $tmp_folder_trimmed = trim($tmp_folder, ' /');
         $this->tmp_folder = "/$tmp_folder_trimmed/backup-" . Randomness::getRandomString();
 
         $this->date = date('Y-m-d');
