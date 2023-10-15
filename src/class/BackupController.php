@@ -68,7 +68,7 @@ class BackupController {
     private function upload() {
         $action = new Upload($this->name, $this->date, $this->files, $this->config);
 
-        $action->do();
+        // $action->do();
     }
 
     private function cleanUp() {
@@ -78,6 +78,7 @@ class BackupController {
     }
 
     public function extractAction() {
+        /*
         global $argv;
 
         $options = getopt('', ["openssl_password::", "7z_password::"]);
@@ -105,6 +106,7 @@ class BackupController {
         }
 
         $extraction_folder_realpath = realpath($extraction_folder);
+        */
     }
 
     public function __destruct() {

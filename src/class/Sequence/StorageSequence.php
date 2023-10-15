@@ -30,4 +30,5 @@ class StorageSequence extends Sequence {
     public function current(): CommonInterface {
         return $this->array[ $this->position ];
     }
+
 }
