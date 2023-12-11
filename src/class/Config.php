@@ -50,6 +50,7 @@ class Config {
                 } else {
                     throw new Exception("Incorrect config key: '$request_string'");
                 }
+
             // Nagivating deeper
             } elseif (isset($array[$key]) && is_array($array[$key])) {
                 $array = $array[$key];

@@ -108,6 +108,8 @@ class Gpg implements CommonInterface {
 
     public function extract(string $source, string $destination) {
         // TODO: To implement
+
+        // gpg --batch --quiet --yes --passphrase "password" --output "projects-2023-12-11.tgz" -d projects-2023-12-11.tgz.gpg
     }
 
     public function setPassword(?string $password) {

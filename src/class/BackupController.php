@@ -34,7 +34,7 @@ class BackupController {
 
         $this->name = $this->config->get('name');
 
-        $tmp_folder = $this->config->get('tmp_folder');
+        $tmp_folder = $this->config->get('advanced_settings/tmp_folder');
 
         if (!is_dir($tmp_folder) || !is_writable($tmp_folder)) {
             mkdir($tmp_folder, 0700);
@@ -68,7 +68,7 @@ class BackupController {
     private function upload() {
         $action = new Upload($this->name, $this->date, $this->files, $this->config);
 
-        // $action->do();
+        $action->do();
     }
 
     private function cleanUp() {
@@ -78,35 +78,6 @@ class BackupController {
     }
 
     public function extractAction() {
-        /*
-        global $argv;
-
-        $options = getopt('', ["openssl_password::", "7z_password::"]);
-
-        $custom_openssl_password = $options['openssl_password'] ?? false;
-        $custom_sevenzip_password = $options['7z_password'] ?? false;
-
-        if (!empty($custom_openssl_password)) {
-            $this->passwords_list['gzip_openssl'] = $custom_openssl_password;
-        }
-
-        if (!empty($custom_sevenzip_password)) {
-            $this->passwords_list['7zip'] = $custom_sevenzip_password;
-        }
-
-        $rest_index = null;
-        $opts = getopt('a:b:', [], $rest_index);
-        $pos_args = array_slice($argv, $rest_index);
-
-        $backup_filepath = $pos_args[0] ?? false;
-        $extraction_folder = $pos_args[1] ?? false;
-
-        if (empty($extraction_folder)) {
-            $extraction_folder = '.';
-        }
-
-        $extraction_folder_realpath = realpath($extraction_folder);
-        */
     }
 
     public function __destruct() {

@@ -39,6 +39,7 @@ php /path/scripts/linux-backup-script/bin/backup.php --create --cleanup
 `--cleanup` will delete old backups, according to retention period settings
 
 ## Installation
+
 1. mkdir /root/scripts/
 2. cd /root/scripts/
 3. git clone https://github.com/stepcodebox/linux-backup-script.git

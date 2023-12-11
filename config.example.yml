@@ -1,7 +1,5 @@
 name: "vps"
 
-tmp_folder: "/tmp/linux-backup-script/"
-
 sources:
     local_folders:
         - "/etc"
@@ -44,3 +42,4 @@ retention_periods:
 
 advanced_settings:
     process_priority: "5"
+    tmp_folder: "/tmp/linux-backup-script/"
