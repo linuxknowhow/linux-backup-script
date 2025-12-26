@@ -1,7 +1,7 @@
 <?php
 
-if (version_compare(phpversion(), '7.4', '<') == true) {
-    echo 'PHP 7.4 or newer is required. Your PHP version is: ' . phpversion() . '. Exiting.' . PHP_EOL;
+if (version_compare(phpversion(), '8.2', '<') == true) {
+    echo 'PHP 8.2 or newer is required. Your PHP version is: ' . phpversion() . '. Exiting.' . PHP_EOL;
 
     exit(1);
 }

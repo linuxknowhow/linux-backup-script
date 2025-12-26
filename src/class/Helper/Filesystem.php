@@ -65,17 +65,4 @@ class Filesystem {
         return mb_substr($path, 0, 1) === '/' ? true : false;
     }
 
-    public static function assertFileMimetype(string $filepath, string $mimetype) {
-        return true;
-
-        // TODO: to use mimetype linux command mimetype instead
-
-        $file_mime_type = mime_content_type($filepath);
-
-        if ($file_mime_type === $mimetype) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }

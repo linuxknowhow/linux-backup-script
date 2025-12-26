@@ -97,9 +97,5 @@ class MySQL {
         if (!file_exists($filepath)) {
             throw new Exception("Database archive was not created" . PHP_EOL);
         }
-
-        if (!Filesystem::assertFileMimetype($filepath, 'application/sql')) {
-            throw new Exception("Database archive doesn't have the correct file mime type" . PHP_EOL);
-        }
     }
 }

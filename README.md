@@ -23,7 +23,7 @@ This script is a command-line utility for backuping linux servers. It's used for
 ## Prerequisites﻿
 
 - PHP 8.2, Tar
-- MySQLi extension for PHP
+- PHP extensions: php8.2-mysqli php8.2-xml php8.2-simplexml
 - Depending on archivers you want to use: Gzip, 7zip, Rar
 - GPG
 
@@ -31,7 +31,7 @@ This script is a command-line utility for backuping linux servers. It's used for
 
 Run in the command line or using cron:
 ```
-php /path/scripts/linux-backup-script/src/backup.php --create --cleanup
+php /path/scripts/linux-backup-script/bin/backup.php --create --cleanup
 ```
 
 `--create` will create and upload a backup
@@ -39,6 +39,7 @@ php /path/scripts/linux-backup-script/src/backup.php --create --cleanup
 `--cleanup` will delete old backups, according to retention period settings
 
 ## Installation
+
 1. mkdir /root/scripts/
 2. cd /root/scripts/
 3. git clone https://github.com/stepcodebox/linux-backup-script.git
@@ -47,7 +48,7 @@ php /path/scripts/linux-backup-script/src/backup.php --create --cleanup
 6. Edit config.yml according to your needs
 7. Run to test and add to cron:
 
-`php /root/scripts/linux-backup-script/src/backup.php --create --cleanup`
+`php /root/scripts/linux-backup-script/bin/backup.php --create --cleanup`
 
 ## Config
 
@@ -108,7 +109,3 @@ retention_periods:
 Please send your questions, feedback and suggestions to:
 
 stephenson.inbox@gmail.com
-
-## Did you find it useful?
-
-Consider donating to the [Ukrainian Army Forces](https://savelife.in.ua/en/donate-en/#donate-army-card-monthly).

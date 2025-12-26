@@ -1,7 +1,7 @@
 <?php
 
-require 'init.php';
-require 'functions.php';
+require dirname(__FILE__) . '/../src/init.php';
+require dirname(__FILE__) . '/../src/functions.php';
 
 use Backup\Config;
 use Backup\BackupController;
