@@ -109,7 +109,3 @@ retention_periods:
 Please send your questions, feedback and suggestions to:
 
 stephenson.inbox@gmail.com
-
-## Did you find it useful?
-
-Consider donating to the [Ukrainian Army Forces](https://savelife.in.ua/en/donate-en/#donate-army-card-monthly).
