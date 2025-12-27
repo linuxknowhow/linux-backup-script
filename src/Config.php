@@ -90,9 +90,15 @@ class Config {
             return null;
         }
 
-        $trimmed = rtrim($tmp, ' /');
+        $normalized = trim((string)$tmp);
 
-        return $trimmed === '' ? null : '/' . ltrim($trimmed, '/');
+        if ($normalized === '') {
+            return null;
+        }
+
+        $normalized = trim($normalized, " \t/");
+
+        return $normalized === '' ? null : '/' . ltrim($normalized, '/');
     }
 
     /** @return LocalFolderSource[] */
