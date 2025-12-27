@@ -2,17 +2,12 @@
 
 namespace Backup;
 
-use Backup\Action\BackupDatabases;
-use Backup\Action\BackupFiles;
 use Backup\Action\Create;
 use Backup\Action\Upload;
 use Backup\Action\Cleanup;
-use Backup\Sequence\Sequence;
 use Backup\Config;
 use Backup\Helper\Randomness;
-use Backup\StorageList;
 use Backup\Sequence\ContainersSequence;
-use Backup\Sequence\StorageSequence;
 use Backup\Helper\Filesystem;
 use Exception;
 
