@@ -1,11 +1,10 @@
 <?php
 
-namespace Backup\Model;
+namespace Backup\Domain;
 
-use Backup\Entity\Backup;
 use DateTime;
 
-class CleanupModel {
+class Retention {
     private string $date;
 
     private int $retention_period_years;
@@ -23,63 +22,57 @@ class CleanupModel {
     }
 
     public function do(array $backups): array {
-        // Sorting the backups by date in ascending order
-
+        // Sort backups by date in ascending order
         usort($backups, function (Backup $a, Backup $b) {
             if ($a->getYear() !== $b->getYear()) {
                 return $a->getYear() > $b->getYear();
             } elseif ($a->getMonth() !== $b->getMonth()) {
                 return $a->getMonth() > $b->getMonth();
-            } else {
-                return $a->getDay() > $b->getDay();
             }
+
+            return $a->getDay() > $b->getDay();
         });
 
-        // Cleaning up backups by year
-
+        // Retain by year
         if ($this->retention_period_years > 0) {
-            $current_year_number = (int)date("Y");
+            $current_year_number = (int)date('Y');
 
-            for ($i = $this->retention_period_years-1; $i >= 0; $i--) {
-                $year_number = $current_year_number-$i;
+            for ($i = $this->retention_period_years - 1; $i >= 0; $i--) {
+                $year_number = $current_year_number - $i;
 
                 foreach ($backups as $backup) {
                     if ($backup->getYear() == $year_number) {
                         $backup->markAsPreserved();
-
                         break;
                     }
                 }
             }
         }
 
-        // Cleaning up backups by month
-
+        // Retain by month
         if ($this->retention_period_months > 0) {
-            for ($i = $this->retention_period_months-1; $i >= 0; $i--) {
+            for ($i = $this->retention_period_months - 1; $i >= 0; $i--) {
                 $checked_date = new DateTime("-$i months");
 
-                $checked_date_year = $checked_date->format("Y");
-                $checked_date_month = $checked_date->format("m");
+                $checked_date_year = $checked_date->format('Y');
+                $checked_date_month = $checked_date->format('m');
 
                 foreach ($backups as $backup) {
                     if ($backup->getYear() == $checked_date_year && $backup->getMonth() == $checked_date_month) {
                         $backup->markAsPreserved();
-
                         break;
                     }
                 }
             }
         }
 
-        // Cleaning up backups by week
-
+        // Retain by week
         if ($this->retention_period_weeks > 0) {
-            for ($i = $this->retention_period_weeks-1; $i >= 0; $i--) {
+            for ($i = $this->retention_period_weeks - 1; $i >= 0; $i--) {
                 $checked_date = new DateTime("-$i weeks");
 
-                $checked_date_year = $checked_date->format("Y");
-                $checked_date_week = $checked_date->format("W");
+                $checked_date_year = $checked_date->format('Y');
+                $checked_date_week = $checked_date->format('W');
 
                 $backup_creation_date = DateTime::createFromFormat('Y-m-d', $this->date);
                 $backup_creation_date->setTime(0, 0, 0);
@@ -90,14 +83,13 @@ class CleanupModel {
                     $date->setTime(23, 59, 59);
 
                     if ($date < $backup_creation_date) {
-                        $date_year = $date->format("Y");
-                        $date_month = $date->format("m");
-                        $date_day = $date->format("d");
+                        $date_year = $date->format('Y');
+                        $date_month = $date->format('m');
+                        $date_day = $date->format('d');
 
                         foreach ($backups as $backup) {
                             if ($backup->getYear() == $date_year && $backup->getMonth() == $date_month && $backup->getDay() == $date_day) {
                                 $backup->markAsPreserved();
-
                                 break 2;
                             }
                         }
@@ -106,20 +98,18 @@ class CleanupModel {
             }
         }
 
-        // Cleaning up backups by day
-
+        // Retain by day
         if ($this->retention_period_days > 0) {
-            for ($i = $this->retention_period_days-1; $i >= 0; $i--) {
+            for ($i = $this->retention_period_days - 1; $i >= 0; $i--) {
                 $checked_date = new DateTime("-$i days");
 
-                $checked_date_year = $checked_date->format("Y");
-                $checked_date_month = $checked_date->format("m");
-                $checked_date_day = $checked_date->format("d");
+                $checked_date_year = $checked_date->format('Y');
+                $checked_date_month = $checked_date->format('m');
+                $checked_date_day = $checked_date->format('d');
 
                 foreach ($backups as $backup) {
                     if ($backup->getYear() == $checked_date_year && $backup->getMonth() == $checked_date_month && $backup->getDay() == $checked_date_day) {
                         $backup->markAsPreserved();
-
                         break;
                     }
                 }

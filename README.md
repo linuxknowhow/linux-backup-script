@@ -1,5 +1,11 @@
 # linux-backup-script
 
+How to start using this script?
+
+**Clone the repo - Do composer install - Edit the config file - Put the bin/console into your cron**
+
+That's it!
+
 ## What is it?
 
 This script is a command-line utility for backuping linux servers. It's used for backuping:
@@ -8,30 +14,28 @@ This script is a command-line utility for backuping linux servers. It's used for
 - MySQL databases
 - Cron entries
 
-## Where does it upload backups?
+## Where can it store backups?
 
 - Locally
 - AWS S3
 
 ## Killer features:
 
-- YAML config
-- Archivers with password protection
-- Chaining of archivers
-- GPG encryption
+- Simple PHP script running locally on your server. No telemetry, no privacy violation, no weird behaviour, no nonsense.
+- Easy to configure: one single self-explanatory config file.
+- Protect your backups with strong encryption. You can put your encrypted backup inside of another encrypted backup, like a nested doll. First, create a tar.gz, then encrypt it with 7zip and then encrypt it with GPG. Play with the order of archiving any way you want. Now you can freely upload your backups anywhere without worrying of any cloud service reading the contents without your permission.
 
-## Prerequisites﻿
+## Prerequisites
 
-- PHP 8.2, Tar
-- PHP extensions: php8.2-mysqli php8.2-xml php8.2-simplexml
-- Depending on archivers you want to use: Gzip, 7zip, Rar
-- GPG
+- PHP 8.2
+- PHP extensions: php8.2-mysqli, php8.2-xml, php8.2-simplexml, php8.2-mbstring
+- Binaries (auto-checked based on your config): tar/gzip, mysqldump if MySQL sources are configured, 7z if you use 7zip in containers_sequence, gpg if you use gpg, rar if you use rar.
 
 ## How to run it:
 
 Run in the command line or using cron:
 ```
-php /path/scripts/linux-backup-script/bin/backup.php --create --cleanup
+php /some-path/scripts/linux-backup-script/bin/console --create --cleanup
 ```
 
 `--create` will create and upload a backup
@@ -46,16 +50,14 @@ php /path/scripts/linux-backup-script/bin/backup.php --create --cleanup
 4. composer install
 5. cp config.example.yml config.yml
 6. Edit config.yml according to your needs
-7. Run to test and add to cron:
+7. Run to see if it works and add to cron:
 
-`php /root/scripts/linux-backup-script/bin/backup.php --create --cleanup`
+`php /root/scripts/linux-backup-script/bin/console --create --cleanup`
 
 ## Config
 
 ```
 name: "vps"
-
-tmp_folder: "/tmp/linux-backup-script/"
 
 sources:
     local_folders:
@@ -95,12 +97,22 @@ retention_periods:
     weeks: "3"
     months: "3"
     years: "3"
+
+advanced_settings:
+    tmp_folder: "/tmp/linux-backup-script/"
+
+### How sequences and lists work
+
+- `containers_sequence`: items run in order; the output of each container feeds the next (e.g., targz then gpg).
+- `storage_list`: items are independent targets; each uploaded with the same resulting files (e.g., S3 and local both receive the backup).
+
+Config keys are expected to be stable - new will be added later, but currently used are unlikely to be renamed.
 ```
 
 ## Roadmap
 
 - Add more cloud storage providers: Backblaze, DigitalOcean
-- Add SSH support
+- Add sftp upload
 - Add logging
 - Add notifications
 

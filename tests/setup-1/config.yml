@@ -1,7 +1,5 @@
 name: "my_backup"
 
-tmp_folder: "/backup/"
-
 sources:
     local_folders:
         - "/home/user/"
@@ -52,3 +50,4 @@ retention_periods:
 
 advanced_settings:
     process_priority: "5"
+    tmp_folder: "/tmp/linux-backup-script/"

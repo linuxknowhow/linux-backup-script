@@ -2,7 +2,7 @@
 
 namespace Backup\Storage;
 
-use Backup\Entity\Backup;
+use Backup\Domain\Backup;
 use Backup\Storage\CommonInterface;
 use Backup\Helper\Filesystem;
 use Assert\Assert;

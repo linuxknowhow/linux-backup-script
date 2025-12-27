@@ -1,6 +1,6 @@
 <?php
 
-namespace Backup\Entity;
+namespace Backup\Domain;
 
 class Backup {
     private string $filename;
