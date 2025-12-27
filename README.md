@@ -22,16 +22,15 @@ This script is a command-line utility for backuping linux servers. It's used for
 
 ## Prerequisites﻿
 
-- PHP 8.2, Tar
-- PHP extensions: php8.2-mysqli php8.2-xml php8.2-simplexml
-- Depending on archivers you want to use: Gzip, 7zip, Rar
-- GPG
+- PHP 8.2
+- PHP extensions: php8.2-mysqli, php8.2-xml, php8.2-simplexml, php8.2-mbstring
+- Binaries (auto-checked based on your config): tar/gzip (always), mysqldump if MySQL sources are configured, 7z if you use 7zip in containers_sequence, gpg if you use gpg, rar if you use rar.
 
 ## How to run it:
 
 Run in the command line or using cron:
 ```
-php /path/scripts/linux-backup-script/bin/backup.php --create --cleanup
+php /path/scripts/linux-backup-script/bin/console --create --cleanup
 ```
 
 `--create` will create and upload a backup
@@ -48,7 +47,7 @@ php /path/scripts/linux-backup-script/bin/backup.php --create --cleanup
 6. Edit config.yml according to your needs
 7. Run to test and add to cron:
 
-`php /root/scripts/linux-backup-script/bin/backup.php --create --cleanup`
+`php /root/scripts/linux-backup-script/bin/console --create --cleanup`
 
 ## Config
 
@@ -96,6 +95,13 @@ retention_periods:
 
 advanced_settings:
     tmp_folder: "/tmp/linux-backup-script/"
+
+### How sequences and lists work
+
+- `containers_sequence`: items run in order; the output of each container feeds the next (e.g., targz then gpg).
+- `storage_list`: items are independent targets; each uploaded with the same resulting files (e.g., S3 and local both receive the backup).
+
+Config keys are expected to be stable - new will be added later, but currently used are unlikely to be renamed.
 ```
 
 ## Roadmap
