@@ -11,7 +11,7 @@ class Config {
 
     public function __construct(?string $path = null) {
         if ( empty($path) ) {
-            $config_file_path = realpath(__DIR__ . '/../../config.yml');
+            $config_file_path = realpath(__DIR__ . '/../config.yml');
         } else {
             $config_file_path = $path;
         }
@@ -48,14 +48,14 @@ class Config {
                 if (isset($array[$key])) {
                     return $array[$key];
                 } else {
-                    throw new Exception("Incorrect config key: '$request_string'");
+                    return null;
                 }
 
             // Nagivating deeper
             } elseif (isset($array[$key]) && is_array($array[$key])) {
                 $array = $array[$key];
             } else {
-                throw new Exception("Incorrect config key: '$request_string'");
+                return null;
             }
         }
     }
