@@ -4,7 +4,7 @@ namespace Backup\Sequence;
 
 use Backup\Storage\CommonInterface;
 use Backup\Sequence\Sequence;
-use Backup\Storage\AWS;
+use Backup\Storage\AWS\S3;
 use Backup\Storage\Local;
 use Backup\Storage\SSH;
 use Exception;
@@ -18,7 +18,7 @@ class StorageSequence extends Sequence {
                 break;
 
             case 'aws':
-                $this->array[] = new AWS($settings);
+                $this->array[] = new S3($settings);
 
                 break;
 

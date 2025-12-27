@@ -55,8 +55,6 @@ php /path/scripts/linux-backup-script/bin/backup.php --create --cleanup
 ```
 name: "vps"
 
-tmp_folder: "/tmp/linux-backup-script/"
-
 sources:
     local_folders:
         - "/etc"
@@ -95,6 +93,9 @@ retention_periods:
     weeks: "3"
     months: "3"
     years: "3"
+
+advanced_settings:
+    tmp_folder: "/tmp/linux-backup-script/"
 ```
 
 ## Roadmap

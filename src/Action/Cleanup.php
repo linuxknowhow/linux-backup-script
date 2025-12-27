@@ -4,7 +4,7 @@ namespace Backup\Action;
 
 use Backup\Config;
 use Backup\Sequence\StorageSequence;
-use Backup\Model\CleanupModel;
+use Backup\Retention;
 use Exception;
 
 class Cleanup {
@@ -25,7 +25,7 @@ class Cleanup {
         $retention_period_weeks = (int)$this->config->get('retention_periods/weeks');
         $retention_period_days = (int)$this->config->get('retention_periods/days');
 
-        $cleanUpModel = new CleanupModel($this->date, $retention_period_years, $retention_period_months, $retention_period_weeks, $retention_period_days);
+        $retention = new Retention($this->date, $retention_period_years, $retention_period_months, $retention_period_weeks, $retention_period_days);
 
         $storage_list_settings = $this->config->get('storage_list');
 
@@ -40,7 +40,7 @@ class Cleanup {
                 $backups = $storage->getListOfBackups($this->name);
 
                 if ( is_array($backups) ) {
-                    $cleaned_backups = $cleanUpModel->do($backups);
+                    $cleaned_backups = $retention->do($backups);
 
                     $storage->deleteBackups($cleaned_backups);
                 }

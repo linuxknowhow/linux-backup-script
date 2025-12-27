@@ -1,17 +1,18 @@
 <?php
 
-namespace Backup\Storage;
+namespace Backup\Storage\AWS;
 
-use Aws\S3\S3Client;
-use Aws\Exception\AwsException;
 use Aws\Exception\MultipartUploadException;
+use Aws\Exception\S3Exception;
 use Aws\S3\MultipartUploader;
-use Backup\Entity\Backup;
+use Aws\S3\S3Client;
+use Backup\Domain\Backup;
+use Backup\Storage\CommonInterface;
 use Assert\Assert;
 use Assert\LazyAssertionException;
 use Exception;
 
-class AWS implements CommonInterface {
+class S3 implements CommonInterface {
     private string $region;
     private string $bucket;
     private string $folder;
@@ -47,11 +48,11 @@ class AWS implements CommonInterface {
                     ->string('Invalid AWS bucket setting')
                     ->notEmpty('AWS bucket cannot be empty')
                     ->betweenLength(1, 255, 'Invalid AWS bucket setting')
-                ->that($settings['region'])
+                ->that($settings['access_key_id'])
                     ->string('Invalid AWS access_key_id setting')
                     ->notEmpty('AWS access_key_id cannot be empty')
                     ->betweenLength(1, 255, 'Invalid AWS access_key_id setting')
-                ->that($settings['region'])
+                ->that($settings['secret_key'])
                     ->string('Invalid AWS secret_key setting')
                     ->notEmpty('AWS secret_key cannot be empty')
                     ->betweenLength(1, 255, 'Invalid AWS secret_key setting')
@@ -63,7 +64,7 @@ class AWS implements CommonInterface {
         } catch (LazyAssertionException $e) {
             throw new Exception($e->getMessage());
         } catch (\Throwable $e) {
-            throw new Exception("Fatal error: " . $e->getMessage());
+            throw new Exception('Fatal error: ' . $e->getMessage());
         }
 
         $bucket_trimmed = trim($settings['bucket'], '/');
@@ -87,15 +88,9 @@ class AWS implements CommonInterface {
 
     public function getListOfBackups(string $backup_name) {
         $backups = [];
-
-        if ( !empty($this->folder) ) {
-            $prefix = $this->folder;
-        } else {
-            $prefix = '';
-        }
+        $prefix = !empty($this->folder) ? $this->folder : '';
 
         try {
-            // List only files
             $objects = $this->s3->getIterator('ListObjects', [
                 'Bucket' => $this->bucket,
                 'Prefix' => $prefix,
@@ -104,30 +99,26 @@ class AWS implements CommonInterface {
             $backup_name_length = mb_strlen($backup_name);
 
             foreach ($objects as $object) {
-                $filepath_parts = pathinfo( $object['Key'] );
-
+                $filepath_parts = pathinfo($object['Key']);
                 $filename = $filepath_parts['basename'];
 
                 $pos = strpos($filename, $backup_name);
 
-                if ( $pos === 0 ) {
-                    $filename_part_potentially_with_date = substr($filename, $backup_name_length+1);
+                if ($pos === 0) {
+                    $filename_part_potentially_with_date = substr($filename, $backup_name_length + 1);
 
-                    if ( !empty($filename_part_potentially_with_date) && is_string($filename_part_potentially_with_date) ) {
+                    if (!empty($filename_part_potentially_with_date) && is_string($filename_part_potentially_with_date)) {
                         if (preg_match_all('/^([0-9]{4})-([0-9]{2})-([0-9]{2})/u', $filename_part_potentially_with_date, $matches, PREG_PATTERN_ORDER)) {
-                            if ( !str_ends_with($object['Key'], '/') ) {
+                            if (!str_ends_with($object['Key'], '/')) {
                                 $backup = new Backup($filename, $object['Key'], (int)$matches[1][0], (int)$matches[2][0], (int)$matches[3][0]);
-
                                 $backups[] = $backup;
                             }
                         }
                     }
                 }
-
             }
-
-        } catch (Aws\S3\Exception\S3Exception $e) {
-            throw new Exception('There was an error getting list of backups from the AWS S3:' . PHP_EOL. $e->getMessage());
+        } catch (S3Exception $e) {
+            throw new Exception('There was an error getting list of backups from the AWS S3:' . PHP_EOL . $e->getMessage());
         }
 
         return $backups;
@@ -137,7 +128,7 @@ class AWS implements CommonInterface {
         $filename = basename($filepath);
 
         if (!empty($this->folder)) {
-            $key = "{$this->folder}/$filename";
+            $key = "$this->folder/$filename";
         } else {
             $key = $filename;
         }
@@ -150,18 +141,17 @@ class AWS implements CommonInterface {
         try {
             $result = $uploader->upload();
 
-            // Backup was uploadeded successfully
             if ($result['@metadata']['statusCode'] !== 200) {
                 throw new Exception("Cannot upload backup file '$filepath' into AWS");
             }
         } catch (MultipartUploadException $e) {
-            throw new Exception('There was an error uploading backup to the AWS S3:' . PHP_EOL. $e->getMessage());
+            throw new Exception('There was an error uploading backup to the AWS S3:' . PHP_EOL . $e->getMessage());
         }
     }
 
     public function deleteBackups(array $backups) {
         foreach ($backups as $backup) {
-            if ( false === $backup->isPreserved() && !empty( $backup->getFullpath() ) ) {
+            if (false === $backup->isPreserved() && !empty($backup->getFullpath())) {
                 $this->s3->deleteObject([
                     'Bucket' => $this->bucket,
                     'Key' => $backup->getFullpath(),
