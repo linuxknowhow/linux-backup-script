@@ -2,6 +2,8 @@
 
 namespace Backup\Domain\Storage;
 
+use Exception;
+
 class S3Target {
     private string $region;
     private string $bucket;
@@ -10,11 +12,21 @@ class S3Target {
     private string $secretKey;
 
     public function __construct(string $region, string $bucket, string $folder, string $accessKeyId, string $secretKey) {
-        $this->region = $region;
-        $this->bucket = $bucket;
-        $this->folder = $folder;
-        $this->accessKeyId = $accessKeyId;
-        $this->secretKey = $secretKey;
+        $regionTrimmed = trim($region);
+        $bucketTrimmed = trim($bucket, '/');
+        $folderTrimmed = trim($folder, '/');
+        $accessKeyTrimmed = trim($accessKeyId);
+        $secretKeyTrimmed = trim($secretKey);
+
+        if ($regionTrimmed === '' || $bucketTrimmed === '' || $accessKeyTrimmed === '' || $secretKeyTrimmed === '') {
+            throw new Exception('S3 target requires region, bucket, access_key_id and secret_key');
+        }
+
+        $this->region = $regionTrimmed;
+        $this->bucket = $bucketTrimmed;
+        $this->folder = $folderTrimmed;
+        $this->accessKeyId = $accessKeyTrimmed;
+        $this->secretKey = $secretKeyTrimmed;
     }
 
     public function getRegion(): string {

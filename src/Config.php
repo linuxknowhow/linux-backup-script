@@ -84,7 +84,15 @@ class Config {
     }
 
     public function getTmpFolder(): ?string {
-        return $this->get('advanced_settings/tmp_folder');
+        $tmp = $this->get('advanced_settings/tmp_folder');
+
+        if ($tmp === null) {
+            return null;
+        }
+
+        $trimmed = rtrim($tmp, ' /');
+
+        return $trimmed === '' ? null : '/' . ltrim($trimmed, '/');
     }
 
     /** @return LocalFolderSource[] */
@@ -132,13 +140,13 @@ class Config {
             $hostname = $mysql['hostname'] ?? null;
             $username = $mysql['username'] ?? null;
             $password = $mysql['password'] ?? null;
-            $charset  = $mysql['charset'] ?? '';
+            $charset  = $mysql['charset'] ?? 'utf8mb4';
 
-            if (!$hostname || !$username) {
+            if ($hostname === null || $username === null) {
                 throw new Exception('MySQL source must contain hostname and username');
             }
 
-            $sources[] = new MySqlSource($hostname, $username, $password, $charset);
+            $sources[] = new MySqlSource((string)$hostname, (string)$username, $password, (string)$charset);
         }
 
         return $sources;
@@ -193,10 +201,10 @@ class Config {
             switch ($key) {
                 case 'local':
                     $folder = $settings['folder'] ?? null;
-                    if (!$folder) {
+                    if ($folder === null) {
                         throw new Exception('Local storage requires "folder"');
                     }
-                    $targets[] = new LocalTarget($folder);
+                    $targets[] = new LocalTarget((string)$folder);
                     break;
 
                 case 'aws':

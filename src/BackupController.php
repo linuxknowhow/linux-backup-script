@@ -23,13 +23,19 @@ class BackupController {
     public function __construct($config) {
         $this->config = $config;
 
+        $this->config->validate();
+
         // TODO: to check for prerequisities
 
         clearstatcache();
 
         $this->name = $this->config->get('name');
 
-        $tmp_folder = $this->config->get('advanced_settings/tmp_folder');
+        $tmp_folder = $this->config->getTmpFolder();
+
+        if ($tmp_folder === null) {
+            throw new Exception('The tmp folder is not set in the config');
+        }
 
         if (!is_dir($tmp_folder) || !is_writable($tmp_folder)) {
             mkdir($tmp_folder, 0700);
