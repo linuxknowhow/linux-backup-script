@@ -49,6 +49,8 @@ class BackupController {
         $this->tmp_folder = "/$tmp_folder_trimmed/backup-" . Randomness::getRandomString();
 
         $this->date = date('Y-m-d');
+
+        $this->assertRequiredBinaries();
     }
 
     public function createAction() {
@@ -83,5 +85,62 @@ class BackupController {
 
     public function __destruct() {
         Filesystem::remove($this->tmp_folder);
+    }
+
+    private function assertRequiredBinaries(): void {
+        $binaries = ['tar', 'gzip']; // Files component uses TarGzip internally
+
+        if (!empty($this->config->getMySqlSources())) {
+            $binaries[] = 'mysqldump';
+        }
+
+        $containers_sequence_settings = $this->config->get('containers_sequence');
+
+        if (is_array($containers_sequence_settings)) {
+            foreach ($containers_sequence_settings as $item) {
+                if (!is_array($item)) {
+                    continue;
+                }
+
+                $key = key($item);
+
+                if (!is_string($key)) {
+                    continue;
+                }
+
+                $normalized = trim(mb_strtolower($key));
+
+                switch ($normalized) {
+                    case 'targz':
+                        $binaries[] = 'tar';
+                        $binaries[] = 'gzip';
+                        break;
+
+                    case '7zip':
+                    case '7z':
+                        $binaries[] = '7z';
+                        break;
+
+                    case 'gpg':
+                        $binaries[] = 'gpg';
+                        break;
+
+                    case 'rar':
+                        $binaries[] = 'rar';
+                        break;
+                }
+            }
+        }
+
+        $binaries = array_values(array_unique($binaries));
+
+        foreach ($binaries as $binary) {
+            $code = 0;
+            exec('command -v ' . escapeshellarg($binary) . ' >/dev/null 2>&1', $output, $code);
+
+            if ($code !== 0) {
+                throw new Exception("Required binary '$binary' is not available in PATH");
+            }
+        }
     }
 }
