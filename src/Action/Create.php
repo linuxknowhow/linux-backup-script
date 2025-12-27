@@ -39,51 +39,36 @@ class Create {
     }
 
     public function do() {
-        $source_folders = $this->config->get('sources/local_folders');
+        $local_sources = $this->config->getLocalFolderSources();
 
-        if (isset($source_folders)) {
-            if (is_string($source_folders)) {
-                $files = new Files($this->data_folder, [$source_folders]);
-            } elseif (is_array($source_folders)) {
-                $files = new Files($this->data_folder, $source_folders);
-            } else {
-                throw new Exception('Incorrect "sources/local_folders" config value');
-            }
-
+        if (!empty($local_sources)) {
+            $paths = array_map(fn($source) => $source->getPath(), $local_sources);
+            $files = new Files($this->data_folder, $paths);
             $files->create();
         }
 
-        $mysql_list = $this->config->get('sources/mysql');
+        $mysql_sources = $this->config->getMySqlSources();
 
-        if (isset($mysql_list)) {
-            if (is_array($mysql_list)) {
-                $first_element = reset($mysql_list);
-
-                if (key_exists('hostname', $mysql_list) && !empty($mysql_list['hostname']) && is_string($mysql_list['hostname'])) {
-                    $mysql = new MySQL($this->data_folder, [$mysql_list]);
-                } elseif (is_array($first_element)) {
-                    $mysql = new MySQL($this->data_folder, $mysql_list);
-                } else {
-                    throw new Exception('Incorrect "sources/mysql" config value');
-                }
-            } else {
-                throw new Exception('Incorrect "sources/mysql" config value');
+        if (!empty($mysql_sources)) {
+            $mysql_settings = [];
+            foreach ($mysql_sources as $source) {
+                $mysql_settings[] = [
+                    'hostname' => $source->getHostname(),
+                    'username' => $source->getUsername(),
+                    'password' => $source->getPassword(),
+                    'mysql_charset' => $source->getCharset(),
+                ];
             }
 
+            $mysql = new MySQL($this->data_folder, $mysql_settings);
             $mysql->create();
         }
 
-        $cron_users = $this->config->get('sources/cron');
+        $cron_sources = $this->config->getCronSources();
 
-        if (isset($cron_users)) {
-            if (is_string($cron_users)) {
-                $cron = new Cron($this->data_folder, [$cron_users]);
-            } elseif (is_array($cron_users)) {
-                $cron = new Cron($this->data_folder, $cron_users);
-            } else {
-                throw new Exception('Incorrect "sources/cron" config value');
-            }
-
+        if (!empty($cron_sources)) {
+            $users = array_map(fn($source) => $source->getUser(), $cron_sources);
+            $cron = new Cron($this->data_folder, $users);
             $cron->create();
         }
 

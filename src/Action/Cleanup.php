@@ -3,8 +3,11 @@
 namespace Backup\Action;
 
 use Backup\Config;
-use Backup\Sequence\StorageSequence;
 use Backup\Domain\Retention;
+use Backup\Domain\Storage\LocalTarget;
+use Backup\Domain\Storage\S3Target;
+use Backup\Storage\AWS\S3;
+use Backup\Storage\Local;
 use Exception;
 
 class Cleanup {
@@ -27,27 +30,37 @@ class Cleanup {
 
         $retention = new Retention($this->date, $retention_period_years, $retention_period_months, $retention_period_weeks, $retention_period_days);
 
-        $storage_list_settings = $this->config->get('storage_list');
+        $targets = $this->config->getStorageTargets();
 
-        if ( isset($storage_list_settings) ) {
-            $storage_list = new StorageSequence($storage_list_settings);
-
-            if ( !count($storage_list) ) {
-                throw new Exception("No storage destination (\"where to upload backups\") were set in the config file!");
-            }
-
-            foreach ($storage_list as $storage) {
-                $backups = $storage->getListOfBackups($this->name);
-
-                if ( is_array($backups) ) {
-                    $cleaned_backups = $retention->do($backups);
-
-                    $storage->deleteBackups($cleaned_backups);
-                }
-            }
-
-        } else {
+        if (empty($targets)) {
             throw new Exception('Storage settings cannot be empty');
+        }
+
+        $storages = [];
+
+        foreach ($targets as $target) {
+            if ($target instanceof LocalTarget) {
+                $storages[] = new Local(['folder' => $target->getFolder()]);
+            } elseif ($target instanceof S3Target) {
+                $storages[] = new S3([
+                    'region' => $target->getRegion(),
+                    'bucket' => $target->getBucket(),
+                    'folder' => $target->getFolder(),
+                    'access_key_id' => $target->getAccessKeyId(),
+                    'secret_key' => $target->getSecretKey(),
+                ]);
+            } else {
+                throw new Exception('Unsupported storage target');
+            }
+        }
+
+        foreach ($storages as $storage) {
+            $backups = $storage->getListOfBackups($this->name);
+
+            if (is_array($backups)) {
+                $cleaned_backups = $retention->do($backups);
+                $storage->deleteBackups($cleaned_backups);
+            }
         }
     }
 }

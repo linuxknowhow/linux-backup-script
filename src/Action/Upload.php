@@ -3,7 +3,10 @@
 namespace Backup\Action;
 
 use Backup\Config;
-use Backup\Sequence\StorageSequence;
+use Backup\Domain\Storage\LocalTarget;
+use Backup\Domain\Storage\S3Target;
+use Backup\Storage\AWS\S3;
+use Backup\Storage\Local;
 use Exception;
 
 class Upload {
@@ -22,27 +25,36 @@ class Upload {
     }
 
     public function do() {
-        $storage_list_settings = $this->config->get('storage_list');
+        $targets = $this->config->getStorageTargets();
 
-        if ( isset($storage_list_settings) ) {
-            $storage_list = new StorageSequence($storage_list_settings);
-
-            if ( !count($storage_list) ) {
-                throw new Exception("No storage destination (\"where to upload backups\") were set in the config file!");
-            }
-
-            foreach ($storage_list as $storage) {
-                foreach ($this->files as $file) {
-                    // TODO: To check if $file exists
-
-                    echo 'Uploading file: ' . $file . PHP_EOL;
-
-                    $storage->addFile($file);
-                }
-            }
-
-        } else {
+        if (empty($targets)) {
             throw new Exception('Storage settings cannot be empty');
+        }
+
+        $storages = [];
+
+        foreach ($targets as $target) {
+            if ($target instanceof LocalTarget) {
+                $storages[] = new Local(['folder' => $target->getFolder()]);
+            } elseif ($target instanceof S3Target) {
+                $storages[] = new S3([
+                    'region' => $target->getRegion(),
+                    'bucket' => $target->getBucket(),
+                    'folder' => $target->getFolder(),
+                    'access_key_id' => $target->getAccessKeyId(),
+                    'secret_key' => $target->getSecretKey(),
+                ]);
+            } else {
+                throw new Exception('Unsupported storage target');
+            }
+        }
+
+        foreach ($storages as $storage) {
+            foreach ($this->files as $file) {
+                // TODO: To check if $file exists
+                echo 'Uploading file: ' . $file . PHP_EOL;
+                $storage->addFile($file);
+            }
         }
     }
 }
