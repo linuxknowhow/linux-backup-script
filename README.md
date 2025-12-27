@@ -100,14 +100,15 @@ retention_periods:
 
 advanced_settings:
     tmp_folder: "/tmp/linux-backup-script/"
+```
 
-### How sequences and lists work
+ **How sequences and lists work**
 
 - `containers_sequence`: items run in order; the output of each container feeds the next (e.g., targz then gpg).
 - `storage_list`: items are independent targets; each uploaded with the same resulting files (e.g., S3 and local both receive the backup).
 
 Config keys are expected to be stable - new will be added later, but currently used are unlikely to be renamed.
-```
+
 
 ## Roadmap
 
