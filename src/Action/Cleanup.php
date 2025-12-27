@@ -4,7 +4,7 @@ namespace Backup\Action;
 
 use Backup\Config;
 use Backup\Sequence\StorageSequence;
-use Backup\Retention;
+use Backup\Domain\Retention;
 use Exception;
 
 class Cleanup {
