@@ -42,7 +42,12 @@ class Create {
         $local_sources = $this->config->getLocalFolderSources();
 
         if (!empty($local_sources)) {
-            $paths = array_map(fn($source) => $source->getPath(), $local_sources);
+            $paths = [];
+
+            foreach ($local_sources as $source) {
+                $paths[] = $source->getPath();
+            }
+
             $files = new Files($this->data_folder, $paths);
             $files->create();
         }
@@ -67,7 +72,12 @@ class Create {
         $cron_sources = $this->config->getCronSources();
 
         if (!empty($cron_sources)) {
-            $users = array_map(fn($source) => $source->getUser(), $cron_sources);
+            $users = [];
+
+            foreach ($cron_sources as $source) {
+                $users[] = $source->getUser();
+            }
+
             $cron = new Cron($this->data_folder, $users);
             $cron->create();
         }
