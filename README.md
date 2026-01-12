@@ -2,7 +2,14 @@
 
 How to start using this script?
 
-**Clone the repo - Do composer install - Edit the config file - Put the bin/console into your cron**
+```bash
+git clone https://github.com/linuxknowhow/linux-backup-script.git
+cd linux-backup-script
+composer update
+cp config.example.yml config.yml
+nano config.yml  # or vim - configure sources, storage, and encryption
+crontab -e       # add: 15 2 * * * /root/scripts/linux-backup-script/bin/console --create --cleanup > /dev/null 2>&1
+```
 
 That's it!
 

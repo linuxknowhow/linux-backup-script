@@ -117,7 +117,13 @@ class Config {
             throw new Exception('Incorrect "sources/local_folders" config value');
         }
 
-        return array_map(fn(string $path) => new LocalFolderSource($path), $source_folders);
+        $sources = [];
+
+        foreach ($source_folders as $path) {
+            $sources[] = new LocalFolderSource($path);
+        }
+
+        return $sources;
     }
 
     /** @return MySqlSource[] */
@@ -174,7 +180,13 @@ class Config {
             throw new Exception('Incorrect "sources/cron" config value');
         }
 
-        return array_map(fn(string $user) => new CronSource($user), $cron_users);
+        $sources = [];
+
+        foreach ($cron_users as $user) {
+            $sources[] = new CronSource($user);
+        }
+
+        return $sources;
     }
 
     /** @return array<int, LocalTarget|S3Target> */
